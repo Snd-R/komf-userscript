@@ -139,10 +139,14 @@ export default Vue.extend({
   },
   props: {
     value: Boolean,
+    seriesTitle: String,
   },
   watch: {
     value(val) {
       this.modal = val
+    },
+    seriesTitle(title) {
+      this.form.title = title
     },
     modal(val) {
       if (val) {
@@ -184,7 +188,7 @@ export default Vue.extend({
     },
     dialogReset() {
       this.tab = 0
-      this.form.title = ''
+      this.form.title = this.seriesTitle
       this.search = true
       this.loading = false
       this.results = false

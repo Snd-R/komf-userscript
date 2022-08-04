@@ -3,6 +3,7 @@
 
     <IdentifySeriesDialog
       v-model="identifySeriesDialog"
+      :seriesTitle="identifySeriesDialogTitle"
     />
   </div>
 </template>
@@ -24,6 +25,9 @@ export default Vue.extend({
       set(val) {
         this.$store.dispatch('dialogIdentifySeriesDisplay', val)
       },
+    },
+    identifySeriesDialogTitle(): string {
+      return this.$store.state.identifySeriesDialogTitle
     },
   },
 })

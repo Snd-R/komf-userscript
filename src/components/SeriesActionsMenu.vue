@@ -38,9 +38,14 @@ export default Vue.extend({
       loading: false,
     }
   },
+  computed: {
+    title(): string | undefined {
+      return (document.querySelector('.v-main__wrap .v-toolbar__content .v-toolbar__title span') as HTMLElement).innerText
+    },
+  },
   methods: {
     promptIdentifySeries() {
-      this.$store.dispatch('dialogIdentifySeries')
+      this.$store.dispatch('dialogIdentifySeries', this.title)
     },
     async autoIdentify() {
       const seriesId = window.location.pathname.split('/')[2]
