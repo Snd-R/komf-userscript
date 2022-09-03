@@ -44,6 +44,15 @@
             >
             </v-text-field>
 
+            <v-text-field v-model="form.edition"
+                          label="edition"
+                          filled
+                          dense
+                          @input="$v.form.edition.$touch()"
+                          @blur="$v.form.title.$touch()"
+            >
+            </v-text-field>
+
             <v-card-actions class="hidden-xs-only">
               <v-spacer/>
               <v-btn
@@ -132,7 +141,9 @@ export default Vue.extend({
       selected: false,
       form: {
         title: '',
+        edition: '',
       },
+      edition: '',
       searchResults: [] as SearchResult[],
       selectedResult: {} as SearchResult,
     }
@@ -165,6 +176,7 @@ export default Vue.extend({
           return this.single
         }),
       },
+      edition: {},
     },
   },
   computed: {
@@ -189,6 +201,8 @@ export default Vue.extend({
     dialogReset() {
       this.tab = 0
       this.form.title = this.seriesTitle
+      this.form.edition = ''
+      this.edition = ''
       this.search = true
       this.loading = false
       this.results = false
@@ -218,6 +232,7 @@ export default Vue.extend({
       this.results = true
       this.search = false
       this.loading = false
+      this.edition = this.form.edition
     },
     async editMetadata(): Promise<boolean> {
       if (this.seriesId) {
@@ -225,6 +240,7 @@ export default Vue.extend({
           seriesId: this.seriesId,
           provider: this.selectedResult.provider,
           providerSeriesId: this.selectedResult.resultId,
+          edition: this.edition == '' ? undefined : this.edition,
         }
         await this.$komfMetadata.identifySeries(request)
         return true

@@ -8,5 +8,6 @@ export interface SearchResult {
 export interface IdentifyRequest {
   seriesId: string,
   provider: string,
-  providerSeriesId: string
+  providerSeriesId: string,
+  edition?: string
 }
