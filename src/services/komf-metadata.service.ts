@@ -61,4 +61,28 @@ export default class KomfMetadataService {
     }
   }
 
+  async resetSeries(seriesId: string) {
+    try {
+      await this.http.post(`reset/series/${seriesId}`)
+    } catch (e) {
+      let msg = 'An error occurred while trying to identify series'
+      if (e.response.data.message) {
+        msg += `: ${e.response.data.message}`
+      }
+      throw new Error(msg)
+    }
+  }
+
+  async resetLibrary(libraryId: string) {
+    try {
+      await this.http.post(`reset/library/${libraryId}`)
+    } catch (e) {
+      let msg = 'An error occurred while trying to identify series'
+      if (e.response.data.message) {
+        msg += `: ${e.response.data.message}`
+      }
+      throw new Error(msg)
+    }
+  }
+
 }

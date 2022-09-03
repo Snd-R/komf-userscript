@@ -13,6 +13,9 @@
         <v-list-item @click="autoIdentify">
           <v-list-item-title>Auto-Identify</v-list-item-title>
         </v-list-item>
+        <v-list-item @click="promptResetSeries">
+          <v-list-item-title>Reset Metadata</v-list-item-title>
+        </v-list-item>
       </v-list>
     </v-menu>
     <v-dialog v-model="loading" :transition="false" fullscreen>
@@ -42,16 +45,22 @@ export default Vue.extend({
     title(): string | undefined {
       return (document.querySelector('.v-main__wrap .v-toolbar__content .v-toolbar__title span') as HTMLElement).innerText
     },
+    seriesId(): string {
+      return window.location.pathname.split('/')[2]
+    },
   },
   methods: {
     promptIdentifySeries() {
       this.$store.dispatch('dialogIdentifySeries', this.title)
     },
+
+    promptResetSeries() {
+      this.$store.dispatch('dialogResetSeries', this.seriesId)
+    },
     async autoIdentify() {
-      const seriesId = window.location.pathname.split('/')[2]
       this.loading = true
       try {
-        await this.$komfMetadata.matchSeries(seriesId)
+        await this.$komfMetadata.matchSeries(this.seriesId)
       } catch (e) {
         this.$eventHub.$emit(ERROR, {message: e.message} as ErrorEvent)
       }
