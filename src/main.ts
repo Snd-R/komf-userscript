@@ -1,81 +1,25 @@
-import _, {LoDashStatic} from 'lodash'
-import Vuelidate from 'vuelidate'
-import vuetify from './plugins/vuetify'
-import Vue from 'vue'
-import store from './store'
-import httpPlugin from '@/plugins/http.plugin'
-import komfMetadata from '@/plugins/komf-metadata.plugin'
+import {createApp} from 'vue'
+import {createPinia} from 'pinia'
+import axios, {type AxiosRequestConfig} from 'axios'
+import KomfMetadataService from '@/services/komf-metadata.service'
+import {httpKey, komfMetadataKey} from '@/injection-keys'
+import {Dialog, Notify, Quasar} from 'quasar'
+import 'quasar/src/css/index.sass'
+
 import App from './App.vue'
 
-declare global {
-  interface Window {
-    komf: {
-      url: string
-    }
-  }
-}
+const mountElement = document.createElement('div')
+mountElement.id = 'komf'
+document.body.appendChild(mountElement)
 
-window.komf = window.komf || {}
+let app = createApp(App)
+app.use(Quasar, {plugins: {Notify, Dialog}})
+app.use(createPinia())
 
-Vue.prototype.$_ = _
-Vue.prototype.$eventHub = new Vue()
+const http = axios.create({headers: {'X-Requested-With': 'XMLHttpRequest'}} as AxiosRequestConfig)
+const komfMetadata = new KomfMetadataService(http)
 
-Vue.use(Vuelidate)
-Vue.use(httpPlugin, window.komf.url)
-Vue.use(komfMetadata, {http: Vue.prototype.$http})
+app.provide(httpKey, http)
+app.provide(komfMetadataKey, komfMetadata)
 
-Vue.config.productionTip = false
-
-declare module 'vue/types/vue' {
-  interface Vue {
-    $_: LoDashStatic
-    $eventHub: Vue
-  }
-}
-
-let app: Vue
-
-const initialize = () => {
-  const observer = new window.MutationObserver((mutations) => {
-    let newToolBar
-    for (const {addedNodes, removedNodes} of mutations) {
-      if (!addedNodes || !removedNodes || (addedNodes.length === 0 && removedNodes.length === 0)) {
-        continue
-      }
-
-      for (const node of removedNodes) {
-        if (node.nodeType == Node.ELEMENT_NODE && (<Element>node).childElementCount != 0) {
-          const komfElement = (<Element>node).querySelector('#komf')
-          if (komfElement && app) {
-            app.$destroy()
-          }
-        }
-      }
-
-      for (const node of addedNodes) {
-        if (node.nodeType == Node.ELEMENT_NODE && (<Element>node).childElementCount != 0) {
-          const toolbar = (<Element>node).querySelector('.v-main__wrap .v-toolbar__content')
-
-          if (toolbar && toolbar.parentElement && !toolbar.parentElement.classList.contains('hidden-sm-and-up')) {
-            newToolBar = toolbar
-          }
-        }
-      }
-    }
-
-    if (newToolBar) {
-      const mountElement = document.createElement('div')
-      mountElement.id = 'komf'
-      newToolBar.appendChild(mountElement)
-      app = new Vue({
-        el: mountElement,
-        render: h => h(App),
-        vuetify,
-        store,
-      })
-    }
-  })
-  observer.observe(document, {childList: true, subtree: true})
-}
-
-initialize()
+app.mount(mountElement)

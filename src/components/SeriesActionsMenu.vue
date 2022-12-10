@@ -1,71 +1,95 @@
 <template>
-  <div>
-    <v-menu offset-y>
-      <template v-slot:activator="{ on }">
-        <v-btn icon v-on="on" @click.prevent="">
-          <v-icon>mdi-book-edit</v-icon>
-        </v-btn>
-      </template>
-      <v-list dense>
-        <v-list-item @click="promptIdentifySeries">
-          <v-list-item-title>Identify</v-list-item-title>
-        </v-list-item>
-        <v-list-item @click="autoIdentify">
-          <v-list-item-title>Auto-Identify</v-list-item-title>
-        </v-list-item>
-        <v-list-item @click="promptResetSeries">
-          <v-list-item-title>Reset Metadata</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
-    <v-dialog v-model="loading" :transition="false" fullscreen>
-      <v-container fluid fill-height style="background-color: rgba(89,89,89,0.5);">
-        <v-layout justify-center align-center>
-          <v-progress-circular
-            indeterminate
-            color="primary">
-          </v-progress-circular>
-        </v-layout>
-      </v-container>
-    </v-dialog>
-  </div>
+  <q-btn icon="mdi-book-edit" flat rounded padding="md">
+    <q-menu>
+      <q-item dense clickable @click="promptIdentifySeries" v-close-popup>
+        <q-item-section no-wrap>Identify</q-item-section>
+      </q-item>
+      <q-item dense clickable @click="autoIdentify" v-close-popup>
+        <q-item-section no-wrap>Auto-Identify</q-item-section>
+      </q-item>
+      <q-item dense clickable @click="promptResetSeries" v-close-popup>
+        <q-item-section no-wrap>Reset Metadata</q-item-section>
+      </q-item>
+    </q-menu>
+  </q-btn>
+
+  <q-dialog v-model="loading" maximized transition-duration="0">
+    <div class="q-pa-md flex flex-center" style="background-color: rgba(89, 89, 89, 0.5)">
+      <q-circular-progress indeterminate rounded size="50px" color="lime" class="q-ma-md"/>
+    </div>
+  </q-dialog>
 </template>
-<script lang="ts">
-import Vue from 'vue'
-import {ERROR, ErrorEvent} from '@/types/events'
 
-export default Vue.extend({
-  name: 'SeriesActionsMenu',
-  data: () => {
-    return {
-      loading: false,
-    }
-  },
-  computed: {
-    title(): string | undefined {
-      return (document.querySelector('.v-main__wrap .v-toolbar__content .v-toolbar__title span') as HTMLElement).innerText
-    },
-    seriesId(): string {
-      return window.location.pathname.split('/')[2]
-    },
-  },
-  methods: {
-    promptIdentifySeries() {
-      this.$store.dispatch('dialogIdentifySeries', this.title)
-    },
+<script setup lang="ts">
+import {computed, inject, ref} from 'vue'
+import type KomfMetadataService from '../services/komf-metadata.service'
+import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
+import IdentifySeriesDialog from '@/components/IdentifySeriesDialog.vue'
+import {komfMetadataKey} from '@/injection-keys'
+import {useQuasar} from 'quasar'
+import {useErrorNotification} from '@/errorNotification'
 
-    promptResetSeries() {
-      this.$store.dispatch('dialogResetSeries', this.seriesId)
-    },
-    async autoIdentify() {
-      this.loading = true
-      try {
-        await this.$komfMetadata.matchSeries(this.seriesId)
-      } catch (e) {
-        this.$eventHub.$emit(ERROR, {message: e.message} as ErrorEvent)
-      }
-      this.loading = false
-    },
-  },
+const $q = useQuasar()
+const metadataService = inject<KomfMetadataService>(
+    komfMetadataKey
+) as KomfMetadataService
+const loading = ref(false)
+const title = computed(() => {
+  return (
+      document.querySelector(
+          '.v-main__wrap .v-toolbar__content .v-toolbar__title span'
+      ) as HTMLElement
+  ).innerText
 })
+const seriesId = computed(() => {
+  return window.location.pathname.split('/')[2]
+})
+
+function promptIdentifySeries() {
+  $q.dialog({
+    component: IdentifySeriesDialog,
+
+    componentProps: {
+      seriesTitle: title.value,
+    }
+  })
+}
+
+function promptResetSeries() {
+  $q.dialog({
+    component: ConfirmationDialog,
+
+    componentProps: {
+      title: 'Reset Series',
+      bodyHtml: 'All series metadata will be reset including field locks and thumbnails uploaded by Komf. No files will be modified. Continue?',
+      confirmText: 'Yes, reset series',
+      buttonConfirm: 'Reset',
+      buttonConfirmColor: 'negative'
+    }
+  }).onOk(() => {
+    resetSeries()
+  })
+}
+
+async function resetSeries() {
+  try {
+    await metadataService?.resetSeries(seriesId.value)
+  } catch (e) {
+    useErrorNotification(e)
+  }
+}
+
+async function autoIdentify() {
+  loading.value = true
+  try {
+    await metadataService.matchSeries(seriesId.value)
+  } catch (e) {
+    useErrorNotification(e)
+  }
+  loading.value = false
+}
 </script>
+
+<style scoped lang="scss">
+@import '../styles/fixed.scss';
+</style>

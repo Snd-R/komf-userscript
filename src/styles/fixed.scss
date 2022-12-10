@@ -1,0 +1,23 @@
+.row {
+  margin: 0;
+}
+
+.col {
+  padding: 0;
+}
+
+.row + .row {
+  margin: 0;
+}
+
+:deep(.row) {
+  margin: 0;
+}
+
+:deep(.col) {
+  padding: 0;
+}
+
+:deep(.row + .row) {
+  margin: 0;
+}

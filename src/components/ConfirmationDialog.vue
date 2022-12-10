@@ -1,105 +1,88 @@
 <template>
-  <v-dialog v-model="modal"
-            max-width="450"
-  >
-    <v-card>
-      <v-card-title>{{ title }}</v-card-title>
+  <q-dialog ref="dialogRef" @hide="onDialogHide" @before-hide="dialogCancel">
+    <q-card class="q-dialog-plugin" style="max-width: 450px; width: 450px">
+      <q-card-section>
+        <div class="text-h6">{{ title }}</div>
 
-      <v-card-text>
-        <v-container fluid>
-          <v-row>
-            <v-col v-if="body && !bodyHtml">{{ body }}</v-col>
-            <v-col v-if="bodyHtml" v-html="bodyHtml"/>
-          </v-row>
+        <div class="row q-pa-md">
+          <div class="col" v-if="body && !bodyHtml">{{ body }}</div>
+          <div class="col" v-if="bodyHtml" v-html="bodyHtml"></div>
+        </div>
 
-          <v-row v-if="confirmText">
-            <v-col>
-              <v-checkbox v-model="confirmation" :color="buttonConfirmColor">
-                <template v-slot:label>
-                  {{ confirmText }}
-                </template>
-              </v-checkbox>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card-text>
+        <div class="row" v-if="confirmText">
+          <div class="col">
+            <q-checkbox v-model="confirmation" :color="buttonConfirmColor">
+              {{ confirmText }}
+            </q-checkbox>
+          </div>
+        </div>
+      </q-card-section>
 
-      <v-card-actions>
-        <v-spacer/>
-        <v-btn text @click="dialogCancel">{{ buttonCancel || 'Cancel' }}</v-btn>
-        <v-btn :color="buttonConfirmColor"
-               @click="dialogConfirm"
-               :disabled="confirmText && !confirmation"
-        >{{ buttonConfirm }}
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+      <q-card-actions align="right">
+        <q-btn @click="onDialogCancel">{{ buttonCancel || 'Cancel' }}</q-btn>
+        <q-btn :color="buttonColor" @click="dialogConfirm" :disable="confirmText != null && !confirmation">
+          {{ buttonConfirm }}
+        </q-btn>
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
+<script setup lang="ts">
+import {computed, ref} from 'vue'
+import {useDialogPluginComponent} from 'quasar'
 
-export default Vue.extend({
-  name: 'ConfirmationDialog',
-  data: () => {
-    return {
-      modal: false,
-      confirmation: false,
-    }
+defineEmits([
+  ...useDialogPluginComponent.emits
+])
+const {dialogRef, onDialogHide, onDialogOK, onDialogCancel} = useDialogPluginComponent()
+
+
+const props = defineProps({
+  value: Boolean,
+  title: {
+    type: String,
+    required: true,
   },
-  props: {
-    value: Boolean,
-    title: {
-      type: String,
-      required: true,
-    },
-    body: {
-      type: String,
-      required: false,
-    },
-    bodyHtml: {
-      type: String,
-      required: false,
-    },
-    confirmText: {
-      type: String,
-      required: false,
-    },
-    buttonCancel: {
-      type: String,
-      required: false,
-    },
-    buttonConfirm: {
-      type: String,
-      required: true,
-    },
-    buttonConfirmColor: {
-      type: String,
-      default: 'primary',
-    },
+  body: {
+    type: String,
+    required: false,
   },
-  watch: {
-    value(val) {
-      this.modal = val
-    },
-    modal(val) {
-      !val && this.dialogCancel()
-    },
+  bodyHtml: {
+    type: String,
+    required: false,
   },
-  methods: {
-    dialogCancel() {
-      this.confirmation = false
-      this.$emit('input', false)
-    },
-    dialogConfirm() {
-      this.$emit('confirm')
-      this.$emit('input', false)
-    },
+  confirmText: {
+    type: String,
+    required: false,
+  },
+  buttonCancel: {
+    type: String,
+    required: false,
+  },
+  buttonConfirm: {
+    type: String,
+    required: true,
+  },
+  buttonConfirmColor: {
+    type: String,
+    default: 'primary',
   },
 })
+
+const confirmation = ref(false)
+
+const buttonColor = computed(() => confirmation.value ? props.buttonConfirmColor : '')
+
+function dialogCancel() {
+  confirmation.value = false
+}
+
+function dialogConfirm() {
+  onDialogOK()
+}
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+@import '../styles/fixed.scss';
 </style>

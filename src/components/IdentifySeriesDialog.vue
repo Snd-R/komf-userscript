@@ -1,259 +1,157 @@
 <template>
-  <v-dialog v-model="modal"
-            :fullscreen="$vuetify.breakpoint.xsOnly"
-            max-width="800"
-            :persistent=loading
-            @keydown.esc="dialogCancel"
-  >
-    <form novalidate>
-      <v-card>
+  <q-dialog ref="dialogRef" @hide="onDialogHide" :persistent="loading">
+    <q-card class="q-dialog-plugin" style="max-width: 800px; width: 800px">
+      <q-card-section>
 
-        <v-card-title class="hidden-xs-only">
-          <v-icon class="mx-4">mdi-pencil</v-icon>
+        <div class="text-h6 gt-xs q-pb-lg">
+          <q-icon name="mdi-pencil"/>
           Identify
-        </v-card-title>
+        </div>
 
-        <v-card flat v-if="search">
-          <v-toolbar class="hidden-sm-and-up" id="identify_toolbar">
-            <v-btn icon @click="dialogCancel">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-            <v-toolbar-title>Identify</v-toolbar-title>
-            <v-spacer/>
-            <v-toolbar-items>
-              <v-btn
-                text color="primary"
-                :loading="loading"
-                :disabled="loading || form.title === ''"
-                @click="searchSeries"
-              >
-                Search
-              </v-btn>
-            </v-toolbar-items>
-          </v-toolbar>
+        <q-card flat v-if="search">
 
-          <v-container fluid>
+          <q-toolbar class="lt-sm" id="identify_toolbar">
+            <q-btn flat icon="mdi-close" @click="onDialogCancel"/>
+            <q-toolbar-title>Identify</q-toolbar-title>
+            <q-space/>
+            <q-btn color="secondary" :loading="loading" :disable="loading || form.title === ''" @click="searchSeries">
+              Search
+            </q-btn>
+          </q-toolbar>
 
-            <v-text-field v-model="form.title"
-                          label="title"
-                          filled
-                          dense
-                          :error-messages="requiredErrors('title')"
-                          @input="$v.form.title.$touch()"
-                          @blur="$v.form.title.$touch()"
-            >
-            </v-text-field>
 
-            <v-text-field v-model="form.edition"
-                          label="edition"
-                          filled
-                          dense
-                          @input="$v.form.edition.$touch()"
-                          @blur="$v.form.title.$touch()"
-            >
-            </v-text-field>
+          <div class="col">
+            <q-input class="q-pt-sm q-pb-sm" v-model="form.title" label="title" filled/>
+            <q-input class="q-pt-sm q-pb-sm" v-model="form.edition" label="edition" filled/>
+          </div>
 
-            <v-card-actions class="hidden-xs-only">
-              <v-spacer/>
-              <v-btn
-                class="ma-2"
-                :loading="loading"
-                :disabled="loading || form.title === ''"
-                color="secondary"
-                @click="searchSeries"
-              >
-                Search
-              </v-btn>
-            </v-card-actions>
+          <q-card-actions align="right" class="gt-xs q-pt-lg q-pb-sm">
+            <q-btn :disable="loading" @click="onDialogCancel">Cancel</q-btn>
+            <q-btn :loading="loading" :disable="loading || form.title === ''" color="secondary" @click="searchSeries">
+              Search
+            </q-btn>
+          </q-card-actions>
+        </q-card>
 
-          </v-container>
-        </v-card>
+        <q-card flat v-if="results">
 
-        <v-card flat v-if="results">
-          <v-toolbar class="hidden-sm-and-up">
-            <v-btn icon @click="dialogCancel">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-            <v-toolbar-title>Identify</v-toolbar-title>
-            <v-spacer/>
-            <v-toolbar-items>
-              <v-btn color="primary" :disabled="!selected" @click="dialogConfirm">Confirm</v-btn>
-            </v-toolbar-items>
-          </v-toolbar>
+          <q-toolbar class="lt-sm">
+            <q-btn flat icon="mdi-close" @click="onDialogCancel">
+            </q-btn>
+            <q-toolbar-title>Identify</q-toolbar-title>
+            <q-space/>
+            <q-btn color="secondary" :disable="!selected" @click="dialogConfirm">Confirm</q-btn>
+          </q-toolbar>
 
-          <v-container fluid>
-            <v-row>
-              <v-col
-                align="center"
-                cols="4" sm="3" lg="3" class="pa-1"
-                v-for="(item, index) in searchResults"
-                :key="index"
-              >
-                <!--      Thumbnail-->
-                <identify-card
-                  :item="item"
-                  :selected="isResultSelected(item)"
-                  @on-select-result="selectResult"
-                >
-                </identify-card>
-              </v-col>
-            </v-row>
-          </v-container>
-
-          <v-card-actions class="hidden-xs-only" v-if="results">
-            <v-spacer/>
-            <v-btn text @click="dialogCancel" :disabled="loading">Cancel</v-btn>
-            <v-btn
-              color="primary"
-              :disabled="!selected || loading"
-              :loading="loading"
-              @click="dialogConfirm"
-            >Confirm
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-
-      </v-card>
-    </form>
-  </v-dialog>
+          <div class="row q-col-gutter-xs">
+            <div class="col-4 col-sm-3 col-lg-3" v-for="(item, index) in searchResults" :key="index">
+              <identify-card :item="item" :selected="isResultSelected(item)" @on-select-result="selectResult"/>
+            </div>
+          </div>
+          <q-card-actions align="right" class="gt-xs q-pt-lg q-pb-sm" v-if="results">
+            <q-btn flat :disable="loading" @click="onDialogCancel">Cancel</q-btn>
+            <q-btn color="secondary" :disable="!selected || loading" :loading="loading" @click="dialogConfirm">Confirm
+            </q-btn>
+          </q-card-actions>
+        </q-card>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
-import {helpers, requiredIf} from 'vuelidate/lib/validators'
-import {IdentifyRequest, SearchResult} from '@/types/metadata'
+<script setup lang="ts">
+import {computed, inject, reactive, ref} from 'vue'
+import type {IdentifyRequest, SearchResult} from '@/types/metadata'
 import IdentifyCard from '@/components/IdentifyCard.vue'
-import {ERROR, ErrorEvent} from '@/types/events'
+import type KomfMetadataService from '../services/komf-metadata.service'
+import {komfMetadataKey} from '@/injection-keys'
+import {useDialogPluginComponent} from 'quasar'
+import {useErrorNotification} from '@/errorNotification'
 
-const validLanguage = (value: string) => !helpers.req(value)
+defineEmits([
+  ...useDialogPluginComponent.emits
+])
+const {dialogRef, onDialogHide, onDialogOK, onDialogCancel} = useDialogPluginComponent()
 
-export default Vue.extend({
-  name: 'IdentifySeriesDialog',
-  components: {IdentifyCard},
-  data: () => {
-    return {
-      modal: false,
-      tab: 0,
-      search: true,
-      results: false,
-      loading: false,
-      uploading: false,
-      selected: false,
-      form: {
-        title: '',
-        edition: '',
-      },
-      edition: '',
-      searchResults: [] as SearchResult[],
-      selectedResult: {} as SearchResult,
-    }
-  },
-  props: {
-    value: Boolean,
-    seriesTitle: String,
-  },
-  watch: {
-    value(val) {
-      this.modal = val
-    },
-    seriesTitle(title) {
-      this.form.title = title
-    },
-    modal(val) {
-      if (val) {
-      } else {
-        this.dialogCancel()
-      }
-    },
-    seriesId() {
-      this.dialogReset()
-    },
-  },
-  validations: {
-    form: {
-      title: {
-        required: requiredIf(function (this: any, model: any) {
-          return this.single
-        }),
-      },
-      edition: {},
-    },
-  },
-  computed: {
-    seriesId(): string | undefined {
-      const pathNameArray = window.location.pathname.split('/') || ['']
-      let seriesId = pathNameArray.pop()
-      if (seriesId === '') {
-        seriesId = pathNameArray.pop()
-      }
+const metadataService = inject<KomfMetadataService>(
+    komfMetadataKey
+) as KomfMetadataService
 
-      return seriesId
-    },
-  },
-  methods: {
-    requiredErrors(fieldName: string): string[] {
-      const errors = [] as string[]
-      const formField = this.$v.form!![fieldName] as any
-      if (!formField.$dirty) return errors
-      !formField.required && errors.push('Required')
-      return errors
-    },
-    dialogReset() {
-      this.tab = 0
-      this.form.title = this.seriesTitle
-      this.form.edition = ''
-      this.edition = ''
-      this.search = true
-      this.loading = false
-      this.results = false
-      this.selected = false
-      this.searchResults = []
-      this.$v.$reset()
-    },
-    dialogCancel() {
-      this.$emit('input', false)
-      this.dialogReset()
-    },
-    async dialogConfirm() {
-      this.loading = true
-      if (await this.editMetadata()) {
-        this.$emit('input', false)
-      }
-    },
-    async searchSeries() {
-      this.loading = true
-      try {
-        this.searchResults = await this.$komfMetadata.searchSeries(this.form.title)
-      } catch (e) {
-        this.$eventHub.$emit(ERROR, {message: e.message} as ErrorEvent)
-        this.dialogCancel()
-        return
-      }
-      this.results = true
-      this.search = false
-      this.loading = false
-      this.edition = this.form.edition
-    },
-    async editMetadata(): Promise<boolean> {
-      if (this.seriesId) {
-        const request: IdentifyRequest = {
-          seriesId: this.seriesId,
-          provider: this.selectedResult.provider,
-          providerSeriesId: this.selectedResult.resultId,
-          edition: this.edition == '' ? undefined : this.edition,
-        }
-        await this.$komfMetadata.identifySeries(request)
-        return true
-      }
-      return false
-    },
-    async selectResult(searchResult: SearchResult) {
-      this.selectedResult = searchResult
-      this.selected = true
-    },
-    isResultSelected(item: SearchResult): boolean {
-      return this.selectedResult === item
-    },
+const props = defineProps({
+  seriesTitle: {
+    type: String,
   },
 })
+
+const search = ref(true)
+const results = ref(false)
+const loading = ref(false)
+const selected = ref(false)
+const form = reactive({title: props.seriesTitle ?? '', edition: ''})
+const edition = ref('')
+const searchResults = ref<SearchResult[]>()
+const selectedResult = ref<SearchResult>({} as SearchResult)
+
+const seriesId = computed(() => {
+  const pathNameArray = window.location.pathname.split('/') || ['']
+  let seriesId = pathNameArray.pop()
+  if (seriesId === '') {
+    seriesId = pathNameArray.pop()
+  }
+
+  return seriesId
+})
+
+async function dialogConfirm() {
+  loading.value = true
+  await editMetadata()
+  onDialogOK()
+}
+
+async function searchSeries() {
+  loading.value = true
+  try {
+    searchResults.value = await metadataService.searchSeries(form.title)
+  } catch (e) {
+    useErrorNotification(e)
+    onDialogCancel()
+    return
+  }
+  results.value = true
+  search.value = false
+  loading.value = false
+  edition.value = form.edition
+}
+
+async function editMetadata() {
+  if (seriesId.value) {
+    const request: IdentifyRequest = {
+      seriesId: seriesId.value,
+      provider: selectedResult.value.provider,
+      providerSeriesId: selectedResult.value.resultId,
+      edition: edition.value == '' ? undefined : edition.value,
+    }
+
+    try {
+      await metadataService.identifySeries(request)
+    } catch (e) {
+      useErrorNotification(e)
+      onDialogCancel()
+      return
+    }
+  }
+}
+
+function selectResult(searchResult: SearchResult) {
+  selectedResult.value = searchResult
+  selected.value = true
+}
+
+function isResultSelected(item: SearchResult): boolean {
+  return selectedResult.value === item
+}
 </script>
+
+<style scoped lang="scss">
+@import '../styles/fixed.scss';
+</style>
