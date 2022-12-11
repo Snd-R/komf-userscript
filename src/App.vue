@@ -3,7 +3,7 @@
     <Teleport :to="menuElement">
       <q-btn v-if="navigationMenu" flat no-caps align="left" class="text-body1 transparent full-width" icon="mdi-puzzle"
              @click="settingsDialog">
-        <div class="q-ml-lg">Komf Settings</div>
+        <div style="margin-left: 30px">Komf Settings</div>
       </q-btn>
     </Teleport>
     <Teleport :to="toolbarElement">

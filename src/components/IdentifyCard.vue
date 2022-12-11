@@ -5,8 +5,12 @@
 
     <q-card-section horizontal class="card-border">
       <q-img :src="item.imageUrl" ratio="0.7071" contain/>
-      <q-card-section>
-        <div class="text-center">{{ item.title }}</div>
+      <q-card-section class="full-width">
+        <div class="text-center ellipsis-2-lines" style="max-height:42px;height:42px">
+          {{ item.title }}
+          <q-tooltip :delay="500">{{ item.title }}</q-tooltip>
+        </div>
+
         <div class="text-center text-weight-bold">{{ item.provider }}</div>
       </q-card-section>
     </q-card-section>
@@ -44,6 +48,8 @@ function onClick() {
 .identify-card {
   max-width: v-bind(width);
   width: v-bind(width);
+  border: 3px solid transparent;
+  background-color: $darker;
 }
 
 .identify-card:hover {

@@ -1,5 +1,5 @@
 <template>
-  <q-btn icon="mdi-folder-edit" flat rounded padding="md">
+  <q-btn icon="mdi-folder-edit" flat rounded padding="0.85em">
     <q-menu>
       <q-item clickable v-close-popup @click="autoIdentify">
         <q-item-section class="text-body2 text-weight-medium" no-wrap>Auto-Identify Library</q-item-section>
@@ -16,7 +16,7 @@ import {computed, inject} from 'vue'
 import type KomfMetadataService from '../services/komf-metadata.service'
 import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
 import {komfMetadataKey} from '@/injection-keys'
-import {useErrorNotification} from '@/errorNotification'
+import {errorNotification} from '@/errorNotification'
 import {useQuasar} from 'quasar';
 
 const $q = useQuasar();
@@ -30,7 +30,7 @@ async function autoIdentify() {
   try {
     await metadataService.matchLibrary(libraryId.value)
   } catch (e) {
-    useErrorNotification(e)
+    errorNotification(e, $q)
     return
   }
   $q.notify({
@@ -61,7 +61,7 @@ async function resetLibrary() {
   try {
     await metadataService?.resetLibrary(libraryId.value)
   } catch (e) {
-    useErrorNotification(e)
+    errorNotification(e, $q)
   }
 }
 </script>

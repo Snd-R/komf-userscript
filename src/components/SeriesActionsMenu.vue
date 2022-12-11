@@ -1,5 +1,5 @@
 <template>
-  <q-btn icon="mdi-book-edit" flat rounded padding="md">
+  <q-btn icon="mdi-book-edit" flat rounded padding="0.85em">
     <q-menu>
       <q-item dense clickable @click="promptIdentifySeries" v-close-popup>
         <q-item-section no-wrap>Identify</q-item-section>
@@ -27,7 +27,7 @@ import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
 import IdentifySeriesDialog from '@/components/IdentifySeriesDialog.vue'
 import {komfMetadataKey} from '@/injection-keys'
 import {useQuasar} from 'quasar'
-import {useErrorNotification} from '@/errorNotification'
+import {errorNotification} from '@/errorNotification'
 
 const $q = useQuasar()
 const metadataService = inject<KomfMetadataService>(
@@ -75,7 +75,7 @@ async function resetSeries() {
   try {
     await metadataService?.resetSeries(seriesId.value)
   } catch (e) {
-    useErrorNotification(e)
+    errorNotification(e, $q)
   }
 }
 
@@ -84,7 +84,7 @@ async function autoIdentify() {
   try {
     await metadataService.matchSeries(seriesId.value)
   } catch (e) {
-    useErrorNotification(e)
+    errorNotification(e, $q)
   }
   loading.value = false
 }

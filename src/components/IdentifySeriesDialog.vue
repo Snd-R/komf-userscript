@@ -43,8 +43,8 @@
             <q-btn color="secondary" :disable="!selected" @click="dialogConfirm">Confirm</q-btn>
           </q-toolbar>
 
-          <div class="row q-col-gutter-xs">
-            <div class="col-4 col-sm-3 col-lg-3" v-for="(item, index) in searchResults" :key="index">
+          <div class="row">
+            <div class="col-auto" v-for="(item, index) in searchResults" :key="index">
               <identify-card :item="item" :selected="isResultSelected(item)" @on-select-result="selectResult"/>
             </div>
           </div>
@@ -66,7 +66,8 @@ import IdentifyCard from '@/components/IdentifyCard.vue'
 import type KomfMetadataService from '../services/komf-metadata.service'
 import {komfMetadataKey} from '@/injection-keys'
 import {useDialogPluginComponent} from 'quasar'
-import {useErrorNotification} from '@/errorNotification'
+import {errorNotification} from '@/errorNotification'
+import {useQuasar} from 'quasar'
 
 defineEmits([
   ...useDialogPluginComponent.emits
@@ -83,6 +84,7 @@ const props = defineProps({
   },
 })
 
+const $q = useQuasar()
 const search = ref(true)
 const results = ref(false)
 const loading = ref(false)
@@ -113,7 +115,7 @@ async function searchSeries() {
   try {
     searchResults.value = await metadataService.searchSeries(form.title)
   } catch (e) {
-    useErrorNotification(e)
+    errorNotification(e, $q)
     onDialogCancel()
     return
   }
@@ -135,7 +137,7 @@ async function editMetadata() {
     try {
       await metadataService.identifySeries(request)
     } catch (e) {
-      useErrorNotification(e)
+      errorNotification(e, $q)
       onDialogCancel()
       return
     }

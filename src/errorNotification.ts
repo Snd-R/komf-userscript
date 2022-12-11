@@ -1,12 +1,11 @@
-import {useQuasar} from 'quasar'
+import type {QVueGlobals} from "quasar"
 
-export function useErrorNotification(error: Error | unknown) {
+export function errorNotification(error: Error | unknown, quasar: QVueGlobals) {
     let text
     if (error instanceof Error) text = error.message
     else text = String(error)
 
-    const $q = useQuasar()
-    $q.notify({
+    quasar.notify({
         message: text,
         color: 'negative',
         closeBtn: true,
