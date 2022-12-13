@@ -1,14 +1,12 @@
 <template>
-  <q-btn icon="mdi-folder-edit" flat rounded padding="0.85em">
-    <q-menu>
-      <q-item clickable v-close-popup @click="autoIdentify">
-        <q-item-section class="text-body2 text-weight-medium" no-wrap>Auto-Identify Library</q-item-section>
-      </q-item>
-      <q-item clickable v-close-popup @click="promptResetLibrary">
-        <q-item-section class="text-body2 text-weight-medium" no-wrap>Reset Metadata</q-item-section>
-      </q-item>
-    </q-menu>
-  </q-btn>
+  <q-menu class="text-body2 text-weight-medium">
+    <q-item  clickable v-close-popup @click="autoIdentify">
+      <q-item-section class="text-body2 text-weight-medium" no-wrap>Auto-Identify Library</q-item-section>
+    </q-item>
+    <q-item  clickable v-close-popup @click="promptResetLibrary">
+      <q-item-section class="text-body2 text-weight-medium" no-wrap>Reset Metadata</q-item-section>
+    </q-item>
+  </q-menu>
 </template>
 
 <script setup lang="ts">
@@ -67,5 +65,5 @@ async function resetLibrary() {
 </script>
 
 <style scoped lang="scss">
-@import '../styles/fixed.scss';
+@import '../styles/scoped.scss';
 </style>

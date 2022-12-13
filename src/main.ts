@@ -5,6 +5,7 @@ import KomfMetadataService from '@/services/komf-metadata.service'
 import {httpKey, komfMetadataKey} from '@/injection-keys'
 import {Dialog, Notify, Quasar} from 'quasar'
 import 'quasar/src/css/index.sass'
+import './styles/global-overrides.scss'
 
 import App from './App.vue'
 

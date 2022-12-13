@@ -1,17 +1,15 @@
 <template>
-  <q-btn icon="mdi-book-edit" flat rounded padding="0.85em">
-    <q-menu>
-      <q-item dense clickable @click="promptIdentifySeries" v-close-popup>
-        <q-item-section no-wrap>Identify</q-item-section>
-      </q-item>
-      <q-item dense clickable @click="autoIdentify" v-close-popup>
-        <q-item-section no-wrap>Auto-Identify</q-item-section>
-      </q-item>
-      <q-item dense clickable @click="promptResetSeries" v-close-popup>
-        <q-item-section no-wrap>Reset Metadata</q-item-section>
-      </q-item>
-    </q-menu>
-  </q-btn>
+  <q-menu class="text-body2 text-weight-medium">
+    <q-item clickable @click="promptIdentifySeries" v-close-popup>
+      <q-item-section no-wrap>Identify</q-item-section>
+    </q-item>
+    <q-item clickable @click="autoIdentify" v-close-popup>
+      <q-item-section no-wrap>Auto-Identify</q-item-section>
+    </q-item>
+    <q-item clickable @click="promptResetSeries" v-close-popup>
+      <q-item-section no-wrap>Reset Metadata</q-item-section>
+    </q-item>
+  </q-menu>
 
   <q-dialog v-model="loading" maximized transition-duration="0">
     <div class="q-pa-md flex flex-center" style="background-color: rgba(89, 89, 89, 0.5)">
@@ -21,36 +19,42 @@
 </template>
 
 <script setup lang="ts">
-import {computed, inject, ref} from 'vue'
+import {inject, ref} from 'vue'
 import type KomfMetadataService from '../services/komf-metadata.service'
 import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
 import IdentifySeriesDialog from '@/components/IdentifySeriesDialog.vue'
 import {komfMetadataKey} from '@/injection-keys'
+import MediaServer from "@/types/mediaServer";
 import {useQuasar} from 'quasar'
 import {errorNotification} from '@/errorNotification'
+import {useSettingsStore} from "@/stores/settings";
 
 const $q = useQuasar()
-const metadataService = inject<KomfMetadataService>(
-    komfMetadataKey
-) as KomfMetadataService
+const metadataService = inject<KomfMetadataService>(komfMetadataKey) as KomfMetadataService
+const settings = useSettingsStore()
+
 const loading = ref(false)
-const title = computed(() => {
-  return (
-      document.querySelector(
-          '.v-main__wrap .v-toolbar__content .v-toolbar__title span'
-      ) as HTMLElement
-  ).innerText
-})
-const seriesId = computed(() => {
-  return window.location.pathname.split('/')[2]
-})
+
+function seriesTitle() {
+  if (settings.mediaServer == MediaServer.Komga)
+    return (document.querySelector('.v-main__wrap .v-toolbar__content .v-toolbar__title span') as HTMLElement).innerText
+  else
+    return (document.querySelector('app-series-detail app-side-nav-companion-bar div h2 span') as HTMLElement).innerText
+}
+
+function seriesId() {
+  if (settings.mediaServer == MediaServer.Komga)
+    return window.location.pathname.split('/')[2]
+  else
+    return window.location.pathname.split('/')[4]
+}
 
 function promptIdentifySeries() {
   $q.dialog({
     component: IdentifySeriesDialog,
 
     componentProps: {
-      seriesTitle: title.value,
+      seriesTitle: seriesTitle(),
     }
   })
 }
@@ -73,7 +77,7 @@ function promptResetSeries() {
 
 async function resetSeries() {
   try {
-    await metadataService?.resetSeries(seriesId.value)
+    await metadataService?.resetSeries(seriesId())
   } catch (e) {
     errorNotification(e, $q)
   }
@@ -82,7 +86,7 @@ async function resetSeries() {
 async function autoIdentify() {
   loading.value = true
   try {
-    await metadataService.matchSeries(seriesId.value)
+    await metadataService.matchSeries(seriesId())
   } catch (e) {
     errorNotification(e, $q)
   }
@@ -91,5 +95,5 @@ async function autoIdentify() {
 </script>
 
 <style scoped lang="scss">
-@import '../styles/fixed.scss';
+@import '../styles/scoped.scss';
 </style>

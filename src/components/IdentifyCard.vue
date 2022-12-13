@@ -4,15 +4,18 @@
     <span class="q-focus-helper"></span>
 
     <q-card-section horizontal class="card-border">
-      <q-img :src="item.imageUrl" ratio="0.7071" contain/>
-      <q-card-section class="full-width">
-        <div class="text-center ellipsis-2-lines" style="max-height:42px;height:42px">
-          {{ item.title }}
-          <q-tooltip :delay="500">{{ item.title }}</q-tooltip>
-        </div>
+      <div class="full-width" style="padding: 0">
+        <q-img :src="item.imageUrl" ratio="0.7071"/>
 
-        <div class="text-center text-weight-bold">{{ item.provider }}</div>
-      </q-card-section>
+        <q-card-section class="full-width">
+          <div class="text-center ellipsis-2-lines" style="max-height:42px;height:42px">
+            {{ item.title }}
+            <q-tooltip :delay="500">{{ item.title }}</q-tooltip>
+          </div>
+
+          <div class="text-center text-weight-bold ellipsis">{{ providerName }}</div>
+        </q-card-section>
+      </div>
     </q-card-section>
 
   </q-card>
@@ -21,6 +24,7 @@
 <script setup lang="ts">
 import type {SearchResult} from '@/types/metadata'
 import type {PropType} from 'vue'
+import {computed} from "vue";
 
 const emit = defineEmits(['on-select-result'])
 const props = defineProps({
@@ -35,8 +39,13 @@ const props = defineProps({
   width: {
     type: [String],
     required: false,
-    default: '150px',
+    default: '160px',
   },
+})
+const providerName = computed(() => {
+  return props.item.provider.toLowerCase().split('_')
+      .map(token => token.charAt(0).toUpperCase() + token.slice(1))
+      .join(' ')
 })
 
 function onClick() {

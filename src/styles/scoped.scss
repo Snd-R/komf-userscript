@@ -1,0 +1,38 @@
+.row {
+  margin: 0;
+}
+
+.col {
+  padding: 0;
+}
+
+.row + .row {
+  margin: 0;
+}
+
+:deep(.row) {
+  margin: 0;
+}
+
+:deep(.col) {
+  padding: 0;
+}
+
+:deep(.row + .row) {
+  margin: 0;
+}
+
+.bg-dark {
+  background: unset;
+}
+
+:deep(input:not([type=range])) {
+  background-color: unset;
+  border-color: unset;
+
+  &:focus {
+    border-color: unset;
+    background-color: unset;
+    box-shadow: unset;
+  }
+}

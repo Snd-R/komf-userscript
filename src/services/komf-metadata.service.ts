@@ -13,7 +13,7 @@ export default class KomfMetadataService {
     async searchSeries(seriesName: string): Promise<SearchResult[]> {
         try {
             return (
-                await this.http.get(`${this.settings.komfUrl}/komga/search`, {
+                await this.http.get(`${this.settings.komfUrl}/${this.settings.mediaServer}/search`, {
                     params: {name: seriesName},
                     paramsSerializer: {indexes: null},
                 })
@@ -30,7 +30,7 @@ export default class KomfMetadataService {
 
     async identifySeries(request: IdentifyRequest) {
         try {
-            await this.http.post(`${this.settings.komfUrl}/komga/identify`, request)
+            await this.http.post(`${this.settings.komfUrl}/${this.settings.mediaServer}/identify`, request)
         } catch (e) {
             let msg = 'Failed to identify series'
             if (axios.isAxiosError(e)) {
@@ -43,7 +43,7 @@ export default class KomfMetadataService {
     async matchLibrary(libraryId: string) {
         try {
             await this.http.post(
-                `${this.settings.komfUrl}/komga/match/library/${libraryId}`
+                `${this.settings.komfUrl}/${this.settings.mediaServer}/match/library/${libraryId}`
             )
         } catch (e) {
             let msg = 'Failed to match library'
@@ -57,7 +57,7 @@ export default class KomfMetadataService {
     async matchSeries(seriesId: string) {
         try {
             await this.http.post(
-                `${this.settings.komfUrl}/komga/match/series/${seriesId}`
+                `${this.settings.komfUrl}/${this.settings.mediaServer}/match/series/${seriesId}`
             )
         } catch (e) {
             let msg = 'Failed to match series'
@@ -71,7 +71,7 @@ export default class KomfMetadataService {
     async resetSeries(seriesId: string) {
         try {
             await this.http.post(
-                `${this.settings.komfUrl}/komga/reset/series/${seriesId}`
+                `${this.settings.komfUrl}/${this.settings.mediaServer}/reset/series/${seriesId}`
             )
         } catch (e) {
             let msg = 'Failed to reset series'
@@ -85,7 +85,7 @@ export default class KomfMetadataService {
     async resetLibrary(libraryId: string) {
         try {
             await this.http.post(
-                `${this.settings.komfUrl}/komga/reset/library/${libraryId}`
+                `${this.settings.komfUrl}/${this.settings.mediaServer}/reset/library/${libraryId}`
             )
         } catch (e) {
             let msg = 'Failed to reset library'
@@ -99,7 +99,7 @@ export default class KomfMetadataService {
     async checkConnection(url: string) {
         let data
         try {
-            data = (await this.http.get(`${url}/komga/providers`)).data
+            data = (await this.http.get(`${url}/${this.settings.mediaServer}/providers`)).data
         } catch (e) {
             let msg = 'Connection Failed'
             if (axios.isAxiosError(e)) {

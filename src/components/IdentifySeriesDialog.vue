@@ -44,7 +44,7 @@
           </q-toolbar>
 
           <div class="row">
-            <div class="col-auto" v-for="(item, index) in searchResults" :key="index">
+            <div class="col-auto q-pa-md" v-for="(item, index) in searchResults" :key="index">
               <identify-card :item="item" :selected="isResultSelected(item)" @on-select-result="selectResult"/>
             </div>
           </div>
@@ -155,5 +155,5 @@ function isResultSelected(item: SearchResult): boolean {
 </script>
 
 <style scoped lang="scss">
-@import '../styles/fixed.scss';
+@import '../styles/scoped.scss';
 </style>

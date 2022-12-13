@@ -1,5 +1,5 @@
 {
-  "name": "komf-user-vite-quasar",
+  "name": "komf-userscript",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -11,15 +11,16 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "vue": "^3.2.45",
+    "pinia": "^2.0.26",
+    "axios": "^1.2.0",
+    "quasar": "^2.10.2",
     "@quasar/extras": "^1.15.7",
     "@vueuse/core": "^9.6.0",
-    "axios": "^1.2.0",
-    "pinia": "^2.0.26",
-    "quasar": "^2.10.2",
-    "vite-plugin-css-injected-by-js": "^2.1.1",
-    "vue": "^3.2.45"
+    "vite-plugin-css-injected-by-js": "^2.1.1"
   },
   "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^5.0.0",
     "@quasar/vite-plugin": "^1.2.3",
     "@rushstack/eslint-patch": "^1.1.4",
     "@types/node": "^18.11.9",
@@ -30,9 +31,9 @@
     "eslint": "^8.22.0",
     "eslint-plugin-vue": "^9.3.0",
     "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.20",
     "prettier": "^2.7.1",
     "sass": "^1.32.12",
-    "terser": "^5.16.1",
     "typescript": "~4.7.4",
     "vite": "^3.2.4",
     "vue-tsc": "^1.0.9"

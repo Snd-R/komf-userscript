@@ -5,15 +5,13 @@
         <div class="text-h6">{{ title }}</div>
 
         <div class="row q-pa-md">
-          <div class="col" v-if="body && !bodyHtml">{{ body }}</div>
-          <div class="col" v-if="bodyHtml" v-html="bodyHtml"></div>
+          <div class="col text-body2" v-if="body && !bodyHtml">{{ body }}</div>
+          <div class="col text-body2" v-if="bodyHtml" v-html="bodyHtml"></div>
         </div>
 
         <div class="row" v-if="confirmText">
-          <div class="col">
-            <q-checkbox v-model="confirmation" :color="buttonConfirmColor">
-              {{ confirmText }}
-            </q-checkbox>
+          <div class="col text-body2">
+            <q-checkbox v-model="confirmation" :color="buttonConfirmColor" :label="confirmText"/>
           </div>
         </div>
       </q-card-section>
@@ -84,5 +82,10 @@ function dialogConfirm() {
 </script>
 
 <style scoped lang="scss">
-@import '../styles/fixed.scss';
+@import '../styles/scoped.scss';
+
+:deep(.row > *) {
+  width: auto;
+  padding: 0;
+}
 </style>
