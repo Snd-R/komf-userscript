@@ -16,5 +16,5 @@ Requires tampermonkey or any other supported userscript manager.
 
 - Build or download the latest version from release page
 - Import the file into script manager
-- Set `@match`  to your komga or kavita server url (or both)
+- Set `@include`  to your komga or kavita server url (or both)
 - Set `komf url` in Komf settings from Komga or Kavita UI
