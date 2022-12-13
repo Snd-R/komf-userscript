@@ -1,5 +1,5 @@
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide" :persistent="loading">
+  <q-dialog ref="dialogRef" @hide="onDialogHide" :persistent="loading" @keyup.enter="handleEnterKeyPress">
     <q-card class="q-dialog-plugin" style="max-width: 800px; width: 800px">
       <q-card-section>
 
@@ -151,6 +151,12 @@ function selectResult(searchResult: SearchResult) {
 
 function isResultSelected(item: SearchResult): boolean {
   return selectedResult.value === item
+}
+
+function handleEnterKeyPress(){
+ if(search.value && !loading.value && form.title) {
+   searchSeries()
+ }
 }
 </script>
 
