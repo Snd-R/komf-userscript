@@ -1,10 +1,11 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide" :persistent="loading" @keyup.enter="handleEnterKeyPress">
-    <q-card class="q-dialog-plugin" style="max-width: 800px; width: 800px">
+    <q-card class="q-dialog-plugin" style="max-width: 820px; width: 820px">
       <q-card-section>
 
         <div class="text-h6 gt-xs q-pb-lg">
-          <q-icon name="mdi-pencil"/>
+          <q-icon :name="settings.mediaServer === MediaServer.Komga?
+           'mdi-pencil' :'fa fa-pen'"/>
           Identify
         </div>
 
