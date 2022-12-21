@@ -10,11 +10,11 @@ export default class KomfMetadataService {
         this.http = http
     }
 
-    async searchSeries(seriesName: string): Promise<SearchResult[]> {
+    async searchSeries(seriesName: string, libraryId?: string, seriesId?: string): Promise<SearchResult[]> {
         try {
             return (
                 await this.http.get(`${this.settings.komfUrl}/${this.settings.mediaServer}/search`, {
-                    params: {name: seriesName},
+                    params: {name: seriesName, libraryId: libraryId, seriesId: seriesId},
                     paramsSerializer: {indexes: null},
                 })
             ).data

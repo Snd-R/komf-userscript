@@ -65,9 +65,10 @@ import type {IdentifyRequest, SearchResult} from '@/types/metadata'
 import IdentifyCard from '@/components/IdentifyCard.vue'
 import type KomfMetadataService from '../services/komf-metadata.service'
 import {komfMetadataKey} from '@/injection-keys'
-import {useDialogPluginComponent} from 'quasar'
+import {useSettingsStore} from '@/stores/settings'
+import {useDialogPluginComponent, useQuasar} from 'quasar'
 import {errorNotification} from '@/errorNotification'
-import {useQuasar} from 'quasar'
+import MediaServer from "@/types/mediaServer";
 
 defineEmits([
   ...useDialogPluginComponent.emits
@@ -85,6 +86,8 @@ const props = defineProps({
 })
 
 const $q = useQuasar()
+const settings = useSettingsStore()
+
 const search = ref(true)
 const results = ref(false)
 const loading = ref(false)
@@ -104,6 +107,16 @@ const seriesId = computed(() => {
   return seriesId
 })
 
+const libraryId = computed(() => {
+  let pathTokens = window.location.pathname.split('/')
+  console.log(pathTokens)
+  if (pathTokens[1] == 'library') {
+    return pathTokens[2]
+  } else {
+    return undefined
+  }
+})
+
 async function dialogConfirm() {
   loading.value = true
   await editMetadata()
@@ -113,7 +126,7 @@ async function dialogConfirm() {
 async function searchSeries() {
   loading.value = true
   try {
-    searchResults.value = await metadataService.searchSeries(form.title)
+    searchResults.value = await metadataService.searchSeries(form.title, libraryId.value, seriesId.value)
   } catch (e) {
     errorNotification(e, $q)
     onDialogCancel()
@@ -153,10 +166,10 @@ function isResultSelected(item: SearchResult): boolean {
   return selectedResult.value === item
 }
 
-function handleEnterKeyPress(){
- if(search.value && !loading.value && form.title) {
-   searchSeries()
- }
+function handleEnterKeyPress() {
+  if (search.value && !loading.value && form.title) {
+    searchSeries()
+  }
 }
 </script>
 
