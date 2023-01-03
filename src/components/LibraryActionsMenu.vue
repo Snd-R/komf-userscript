@@ -1,16 +1,16 @@
 <template>
   <q-menu class="text-body2 text-weight-medium">
-    <q-item  clickable v-close-popup @click="autoIdentify">
+    <q-item clickable v-close-popup @click="autoIdentify">
       <q-item-section class="text-body2 text-weight-medium" no-wrap>Auto-Identify Library</q-item-section>
     </q-item>
-    <q-item  clickable v-close-popup @click="promptResetLibrary">
+    <q-item clickable v-close-popup @click="promptResetLibrary">
       <q-item-section class="text-body2 text-weight-medium" no-wrap>Reset Metadata</q-item-section>
     </q-item>
   </q-menu>
 </template>
 
 <script setup lang="ts">
-import {computed, inject} from 'vue'
+import {inject} from 'vue'
 import type KomfMetadataService from '../services/komf-metadata.service'
 import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
 import {komfMetadataKey} from '@/injection-keys'
@@ -20,13 +20,13 @@ import {useQuasar} from 'quasar';
 const $q = useQuasar();
 const metadataService = inject<KomfMetadataService>(komfMetadataKey) as KomfMetadataService
 
-const libraryId = computed(() => {
+function libraryId() {
   return window.location.pathname.split('/')[2]
-})
+}
 
 async function autoIdentify() {
   try {
-    await metadataService.matchLibrary(libraryId.value)
+    await metadataService.matchLibrary(libraryId())
   } catch (e) {
     errorNotification(e, $q)
     return
@@ -57,7 +57,7 @@ function promptResetLibrary() {
 
 async function resetLibrary() {
   try {
-    await metadataService?.resetLibrary(libraryId.value)
+    await metadataService?.resetLibrary(libraryId())
   } catch (e) {
     errorNotification(e, $q)
   }
