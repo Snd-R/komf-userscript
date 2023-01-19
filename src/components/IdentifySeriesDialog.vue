@@ -45,7 +45,10 @@
           </q-toolbar>
 
           <div class="row">
-            <div class="col-auto q-pa-md" v-for="(item, index) in searchResults" :key="index">
+            <div class="col-auto"
+                 style="padding: 16px 16px 16px 16px;"
+                 v-for="(item, index) in searchResults"
+                 :key="index">
               <identify-card :item="item" :selected="isResultSelected(item)" @on-select-result="selectResult"/>
             </div>
           </div>

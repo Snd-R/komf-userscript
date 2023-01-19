@@ -17,7 +17,7 @@
 import {ref} from 'vue'
 import {Theme} from './types/themes'
 import {useQuasar} from 'quasar'
-import SettingsDialog from './components/SettingsDialog.vue'
+import SettingsDialog from './components/settings/SettingsDialog.vue'
 import KomgaSeriesActions from "@/components/KomgaSeriesActions.vue";
 import KomgaLibraryActions from "@/components/KomgaLibraryActions.vue";
 

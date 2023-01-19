@@ -1,13 +1,10 @@
 .bg-dark {
   background: var(--bs-body-bg) !important;
 }
+
 .bg-primary {
   --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-primary-rgb),var(--bs-bg-opacity))!important;
-}
-
-.q-body--prevent-scroll {
-  position: unset !important;
+  background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
 }
 
 body {
@@ -16,4 +13,8 @@ body {
 
 .hidden {
   display: unset !important;
+}
+
+.q-item.row {
+  margin: 0;
 }

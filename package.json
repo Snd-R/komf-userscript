@@ -11,19 +11,23 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "vue": "^3.2.45",
-    "pinia": "^2.0.26",
-    "axios": "^1.2.0",
-    "quasar": "^2.10.2",
     "@quasar/extras": "^1.15.7",
     "@vueuse/core": "^9.6.0",
-    "vite-plugin-css-injected-by-js": "^2.1.1"
+    "axios": "^1.2.0",
+    "is-language-code": "^5.0.3",
+    "pinia": "^2.0.26",
+    "quasar": "^2.10.2",
+    "sortablejs": "^1.15.0",
+    "sortablejs-vue3": "^1.2.5",
+    "vite-plugin-css-injected-by-js": "^2.1.1",
+    "vue": "^3.2.45"
   },
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "^5.0.0",
     "@quasar/vite-plugin": "^1.2.3",
     "@rushstack/eslint-patch": "^1.1.4",
     "@types/node": "^18.11.9",
+    "@types/sortablejs": "^1.15.0",
     "@vitejs/plugin-vue": "^3.2.0",
     "@vue/eslint-config-prettier": "^7.0.0",
     "@vue/eslint-config-typescript": "^11.0.0",

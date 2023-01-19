@@ -21,7 +21,7 @@
 import type {Ref} from 'vue'
 import {ref} from 'vue'
 import {useQuasar} from 'quasar'
-import SettingsDialog from './components/SettingsDialog.vue'
+import SettingsDialog from './components/settings/SettingsDialog.vue'
 import KavitaSeriesActionsMenu from "@/components/KavitaSeriesActionsMenu.vue";
 import KavitaLibraryActions from "@/components/KavitaLibraryActions.vue";
 
@@ -30,7 +30,6 @@ $q.dark.set(true)
 
 const library = ref(false)
 const series = ref(false)
-const navigationMenu = ref(false)
 
 const settingsElement = ref(document.createElement('div'))
 const libraryActionsElement: Ref<HTMLElement> = ref(document.createElement('div'))

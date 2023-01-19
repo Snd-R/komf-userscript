@@ -1,7 +1,7 @@
 <template>
   <q-btn icon="fa fa-pen-to-square"
          flat
-         padding="0.55em 0 0.55em 0"
+         padding=".375rem .75rem"
          style="background: #6c757d; border-radius: 15%">
     <SeriesActionsMenu/>
   </q-btn>
