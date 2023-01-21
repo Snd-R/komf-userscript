@@ -34,3 +34,6 @@ if (title == 'Komga') {
 <style scoped lang="scss">
 @import '@/styles/scoped.scss';
 </style>
+<style lang="scss">
+@import '@/styles/global-overrides.scss';
+</style>

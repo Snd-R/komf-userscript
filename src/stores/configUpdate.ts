@@ -14,6 +14,9 @@ import type {
     KomfConfigUpdateDto,
     KomgaConfigDto,
     KomgaConfigUpdateDto,
+    MetadataPostProcessingConfigUpdateDto,
+    MetadataProcessingConfigDto,
+    MetadataProcessingConfigUpdateDto,
     MetadataProvidersConfigUpdateDto,
     MetadataUpdateConfigDto,
     MetadataUpdateConfigUpdateDto,
@@ -83,16 +86,20 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
     })
 
     const komgaMetadata = reactive({
-        aggregateMetadata: false,
-        modes: ['API'],
-        bookThumbnails: false,
-        seriesThumbnails: false,
-        seriesTitle: false,
-        titleType: 'LOCALIZED',
-        orderBooks: false,
-        readingDirectionValue: null,
-        languageValue: null,
-    } as ProcessingUpdateModel)
+        default: {
+            aggregateMetadata: false,
+            modes: ['API'],
+            bookCovers: false,
+            seriesCovers: false,
+            seriesTitle: false,
+            titleType: 'LOCALIZED',
+            alternativeTitles: false,
+            orderBooks: false,
+            readingDirectionValue: null,
+            languageValue: null,
+        } as ProcessingUpdateModel,
+        library: [] as ProcessingLibraryUpdateModel[]
+    })
 
     const komga = reactive({
         baseUri: 'http://localhost:8080',
@@ -114,14 +121,18 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         }
     })
     const kavitaMetadata = reactive({
-        aggregateMetadata: false,
-        modes: ['API'],
-        bookThumbnails: false,
-        seriesThumbnails: false,
-        seriesTitle: false,
-        titleType: 'LOCALIZED',
-        languageValue: null,
-    } as ProcessingUpdateModel)
+        default: {
+            aggregateMetadata: false,
+            modes: ['API'],
+            bookCovers: false,
+            seriesCovers: false,
+            seriesTitle: false,
+            titleType: 'LOCALIZED',
+            alternativeTitles: false,
+            languageValue: null,
+        } as ProcessingUpdateModel,
+        library: [] as ProcessingLibraryUpdateModel[]
+    })
 
     function reset(config: KomfConfigDto) {
         libraries.value = getLibraries()
@@ -153,6 +164,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         metadataProviders.malClientIdDisabled = config.metadataProviders.malClientId != ''
         metadataProviders.nameMatchingMode = config.metadataProviders.nameMatchingMode
         metadataProviders.defaultProviders = Object.entries(config.metadataProviders.defaultProviders)
+            .sort((a, b) => a[1].priority - b[1].priority)
             .map(([key, value]) => {
                 let books = providersWithBooks.includes(key)
                 return {...(value as ProviderConfigDto), name: key, books: books}
@@ -171,10 +183,12 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                     id: key,
                     name: libraries.value.find(l => l.id == key)?.name ?? '',
                     deleted: false,
-                    providers: Object.entries(value as ProvidersConfigDto).map(([key, value]) => {
-                        let books = providersWithBooks.includes(key)
-                        return {...value as ProviderConfigDto, name: key, books: books}
-                    }).filter(provider => provider.enabled),
+                    providers: Object.entries(value as ProvidersConfigDto)
+                        .sort((a, b) => a[1].priority - b[1].priority)
+                        .map(([key, value]) => {
+                            let books = providersWithBooks.includes(key)
+                            return {...value as ProviderConfigDto, name: key, books: books}
+                        }).filter(provider => provider.enabled),
                     disabledProviders: Object.entries(value as ProvidersConfigDto).map(([key, value]) => {
                         let books = providersWithBooks.includes(key)
                         return {...value as ProviderConfigDto, name: key, books: books}
@@ -195,14 +209,35 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                 }
             })
 
-        komgaMetadata.aggregateMetadata = config.komga.aggregateMetadata
-        komgaMetadata.modes = config.komga.metadataUpdate.modes.slice()
-        komgaMetadata.bookThumbnails = config.komga.metadataUpdate.bookThumbnails
-        komgaMetadata.seriesThumbnails = config.komga.metadataUpdate.seriesThumbnails
-        komgaMetadata.seriesTitle = config.komga.metadataUpdate.seriesTitle
-        komgaMetadata.orderBooks = config.komga.metadataUpdate.orderBooks
-        komgaMetadata.readingDirectionValue = config.komga.metadataUpdate.readingDirectionValue
-        komgaMetadata.languageValue = config.komga.metadataUpdate.languageValue
+        komgaMetadata.default.aggregateMetadata = config.komga.metadataUpdate.default.aggregate
+        komgaMetadata.default.modes = config.komga.metadataUpdate.default.updateModes
+        komgaMetadata.default.bookCovers = config.komga.metadataUpdate.default.bookCovers
+        komgaMetadata.default.seriesCovers = config.komga.metadataUpdate.default.seriesCovers
+        komgaMetadata.default.seriesTitle = config.komga.metadataUpdate.default.postProcessing.seriesTitle
+        komgaMetadata.default.titleType = config.komga.metadataUpdate.default.postProcessing.titleType
+        komgaMetadata.default.orderBooks = config.komga.metadataUpdate.default.postProcessing.orderBooks
+        komgaMetadata.default.readingDirectionValue = config.komga.metadataUpdate.default.postProcessing.readingDirectionValue
+        komgaMetadata.default.languageValue = config.komga.metadataUpdate.default.postProcessing.languageValue
+        komgaMetadata.default.alternativeTitles = config.komga.metadataUpdate.default.postProcessing.alternativeSeriesTitles
+
+        komgaMetadata.library = Object.entries(config.komga.metadataUpdate.library)
+            .map(([libraryId, libraryConfig]) => {
+                return {
+                    id: libraryId,
+                    name: libraries.value.find(l => l.id == libraryId)?.name ?? '',
+                    deleted: false,
+                    aggregateMetadata: libraryConfig.aggregate,
+                    modes: libraryConfig.updateModes,
+                    bookCovers: libraryConfig.bookCovers,
+                    seriesCovers: libraryConfig.seriesCovers,
+                    seriesTitle: libraryConfig.postProcessing.seriesTitle,
+                    titleType: libraryConfig.postProcessing.titleType,
+                    orderBooks: libraryConfig.postProcessing.orderBooks,
+                    readingDirectionValue: libraryConfig.postProcessing.readingDirectionValue,
+                    languageValue: libraryConfig.postProcessing.languageValue,
+                    alternativeTitles: libraryConfig.postProcessing.alternativeSeriesTitles
+                }
+            })
 
         kavita.baseUri = config.kavita.baseUri
         kavita.eventListener.enabled = config.kavita.eventListener.enabled
@@ -215,12 +250,31 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             })
         kavita.apiKey = ''
 
-        kavitaMetadata.aggregateMetadata = config.kavita.aggregateMetadata
-        kavitaMetadata.modes = config.kavita.metadataUpdate.modes.slice()
-        kavitaMetadata.bookThumbnails = config.kavita.metadataUpdate.bookThumbnails
-        kavitaMetadata.seriesThumbnails = config.kavita.metadataUpdate.seriesThumbnails
-        kavitaMetadata.seriesTitle = config.kavita.metadataUpdate.seriesTitle
-        kavitaMetadata.languageValue = config.kavita.metadataUpdate.languageValue
+        kavitaMetadata.default.aggregateMetadata = config.kavita.metadataUpdate.default.aggregate
+        kavitaMetadata.default.modes = config.kavita.metadataUpdate.default.updateModes
+        kavitaMetadata.default.bookCovers = config.kavita.metadataUpdate.default.bookCovers
+        kavitaMetadata.default.seriesCovers = config.kavita.metadataUpdate.default.seriesCovers
+        kavitaMetadata.default.seriesTitle = config.kavita.metadataUpdate.default.postProcessing.seriesTitle
+        kavitaMetadata.default.titleType = config.kavita.metadataUpdate.default.postProcessing.titleType
+        kavitaMetadata.default.languageValue = config.kavita.metadataUpdate.default.postProcessing.languageValue
+        kavitaMetadata.default.alternativeTitles = config.kavita.metadataUpdate.default.postProcessing.alternativeSeriesTitles
+
+        kavitaMetadata.library = Object.entries(config.kavita.metadataUpdate.library)
+            .map(([libraryId, libraryConfig]) => {
+                return {
+                    id: libraryId,
+                    name: libraries.value.find(l => l.id == libraryId)?.name ?? '',
+                    deleted: false,
+                    aggregateMetadata: libraryConfig.aggregate,
+                    modes: libraryConfig.updateModes,
+                    bookCovers: libraryConfig.bookCovers,
+                    seriesCovers: libraryConfig.seriesCovers,
+                    seriesTitle: libraryConfig.postProcessing.seriesTitle,
+                    titleType: libraryConfig.postProcessing.titleType,
+                    languageValue: libraryConfig.postProcessing.languageValue,
+                    alternativeTitles: libraryConfig.postProcessing.alternativeSeriesTitles
+                }
+            })
     }
 
     function getUpdates() {
@@ -235,7 +289,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         return changes
     }
 
-    function getKomgaUpdates(current: KomgaConfigDto) {
+    function getKomgaUpdates(current: KomgaConfigDto): KomgaConfigUpdateDto | undefined {
         let changes: KomgaConfigUpdateDto = {}
         if (komga.baseUri != current.baseUri)
             changes.baseUri = komga.baseUri
@@ -243,8 +297,6 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             changes.komgaUser = komga.user
         if (!komga.passwordDisabled && komga.password != '')
             changes.komgaPassword = komga.password
-        if (komgaMetadata.aggregateMetadata != current.aggregateMetadata)
-            changes.aggregateMetadata = komgaMetadata.aggregateMetadata
 
         let eventListenerPatch = {
             enabled: komga.eventListener.enabled,
@@ -255,20 +307,18 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             current.notifications,
             {libraries: notifications.komgaLibraries?.map(lib => lib.id) ?? []}
         )
-        changes.metadataUpdate = getMetadataUpdates(current.metadataUpdate, komgaMetadata as MetadataUpdateConfigDto)
+        changes.metadataUpdate = getMetadataUpdates(current.metadataUpdate, komgaMetadata)
 
-        if (Object.entries(changes).every(val => val[1] == undefined)) return undefined
+        if (Object.entries(changes).every(val => val[1] === undefined)) return undefined
         else return changes
     }
 
-    function getKavitaUpdates(current: KavitaConfigDto) {
+    function getKavitaUpdates(current: KavitaConfigDto): KavitaConfigUpdateDto | undefined {
         let changes: KavitaConfigUpdateDto = {}
         if (kavita.baseUri != current.baseUri)
-            changes.baseUri = komga.baseUri
+            changes.baseUri = kavita.baseUri
         if (kavita.apiKey)
             changes.apiKey = kavita.apiKey
-        if (kavitaMetadata.aggregateMetadata != current.aggregateMetadata)
-            changes.aggregateMetadata = kavitaMetadata.aggregateMetadata
 
         let eventListenerPatch = {
             enabled: kavita.eventListener.enabled,
@@ -278,60 +328,112 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         changes.notifications = getNotificationsUpdates(current.notifications,
             {libraries: notifications.kavitaLibraries?.map(lib => lib.id) ?? []}
         )
-        changes.metadataUpdate = getMetadataUpdates(current.metadataUpdate, kavitaMetadata as MetadataUpdateConfigDto)
+        changes.metadataUpdate = getMetadataUpdates(current.metadataUpdate, kavitaMetadata)
 
-        if (Object.entries(changes).every(val => val[1] == undefined)) return undefined
+        if (Object.entries(changes).every(val => val[1] === undefined)) return undefined
         else return changes
     }
 
-    function getMetadataUpdates(current: MetadataUpdateConfigDto, patch: MetadataUpdateConfigDto) {
+    function getMetadataUpdates(
+        current: MetadataUpdateConfigDto,
+        patch: { default: ProcessingUpdateModel, library: ProcessingLibraryUpdateModel[] }
+    ): MetadataUpdateConfigUpdateDto | undefined {
         let changes: MetadataUpdateConfigUpdateDto = {}
-        if (!patch.modes.every((v, i) => v === current.modes[i]))
-            changes.modes = patch.modes
-        if (patch.bookThumbnails != current.bookThumbnails)
-            changes.bookThumbnails = patch.bookThumbnails
-        if (patch.seriesThumbnails != current.seriesThumbnails)
-            changes.seriesThumbnails = patch.seriesThumbnails
-        if (patch.seriesTitle != current.seriesTitle)
-            changes.seriesTitle = patch.seriesTitle
-        if (patch.titleType != current.titleType)
-            changes.titleType = patch.titleType
-        if (patch.orderBooks != current.orderBooks)
-            changes.orderBooks = patch.orderBooks
-        if (patch.readingDirectionValue != current.readingDirectionValue)
-            changes.readingDirectionValue = patch.readingDirectionValue
-        if (patch.languageValue != patch.languageValue)
-            changes.languageValue = patch.languageValue
+        changes.default = getMetadataProcessingUpdates(current.default, patch.default)
+        changes.library = getLibraryMetadataUpdates(current.library, patch.library)
 
-        if (Object.entries(changes).every(val => val[1] == undefined)) return undefined
+        if (Object.entries(changes).every(val => val[1] === undefined)) return undefined
         else return changes
     }
 
-    function getEventListenerUpdates(current: EventListenerConfigDto, patch: EventListenerConfigDto) {
+    function getMetadataProcessingUpdates(
+        current: MetadataProcessingConfigDto | undefined,
+        patch: ProcessingUpdateModel
+    ): MetadataProcessingConfigUpdateDto | undefined {
+        let changes: MetadataProcessingConfigUpdateDto = {}
+        if (patch.aggregateMetadata != current?.aggregate)
+            changes.aggregate = patch.aggregateMetadata
+        if (patch.bookCovers != current?.bookCovers)
+            changes.bookCovers = patch.bookCovers
+        if (patch.seriesCovers != current?.seriesCovers)
+            changes.seriesCovers = patch.seriesCovers
+        if (!patch.modes.every((v, i) => v === current?.updateModes[i]))
+            changes.updateModes = patch.modes
+
+        let postProcessingChanges: MetadataPostProcessingConfigUpdateDto | undefined = {}
+        if (patch.seriesTitle != current?.postProcessing.seriesTitle)
+            postProcessingChanges.seriesTitle = patch.seriesTitle
+        if (patch.titleType != current?.postProcessing.titleType)
+            postProcessingChanges.titleType = patch.titleType
+        if (patch.alternativeTitles != current?.postProcessing.alternativeSeriesTitles)
+            postProcessingChanges.alternativeSeriesTitles = patch.alternativeTitles
+        if (patch.orderBooks != current?.postProcessing.orderBooks)
+            postProcessingChanges.orderBooks = patch.orderBooks
+        if (patch.alternativeTitles != current?.postProcessing.alternativeSeriesTitles)
+            postProcessingChanges.alternativeSeriesTitles = patch.alternativeTitles
+        if (patch.readingDirectionValue != current?.postProcessing.readingDirectionValue)
+            postProcessingChanges.readingDirectionValue = patch.readingDirectionValue
+        if (patch.languageValue != current?.postProcessing.languageValue)
+            postProcessingChanges.languageValue = patch.languageValue
+        if (Object.entries(postProcessingChanges).every(val => val[1] === undefined)) postProcessingChanges = undefined
+
+        changes.postProcessing = postProcessingChanges
+
+        if (Object.entries(changes).every(val => val[1] === undefined)) return undefined
+        else return changes
+    }
+
+    function getLibraryMetadataUpdates(
+        current: Record<string, MetadataProcessingConfigDto>,
+        patch: ProcessingLibraryUpdateModel[]
+    ): Record<string, MetadataProcessingConfigUpdateDto | null> | undefined {
+        let currentLibrariesConfig = new Map(Object.entries(current ?? {}))
+        let updatedLibraryProviders = patch
+            .map(libraryConfig => {
+                let config: MetadataProcessingConfigUpdateDto | null | undefined
+                if (libraryConfig.deleted) config = null
+                else config = getMetadataProcessingUpdates(currentLibrariesConfig.get(libraryConfig.id), libraryConfig)
+
+                return [libraryConfig.id, config]
+            })
+            .filter(val => val[1] !== undefined)
+
+        let changes = Object.fromEntries(updatedLibraryProviders)
+        if (Object.entries(changes).every(val => val[1] === undefined)) return undefined
+        else return changes
+    }
+
+    function getEventListenerUpdates(
+        current: EventListenerConfigDto,
+        patch: EventListenerConfigDto
+    ): EventListenerConfigUpdateDto | undefined {
         let changes: EventListenerConfigUpdateDto = {}
 
         if (patch.enabled != current.enabled)
             changes.enabled = komga.eventListener.enabled
 
-        if (patch.libraries == null) {
+        if (patch.libraries.length == 0 && current.libraries.length != 0) {
             changes.libraries = []
-        } else if (!patch.libraries.every((v, i) => v === current.libraries[i])) {
+        } else if (patch.libraries.length != 0 && !patch.libraries.every((v, i) => v === current.libraries[i])) {
             changes.libraries = patch.libraries
         }
 
-        if (Object.entries(changes).every(val => val[1] == undefined)) return undefined
+        if (Object.entries(changes).every(val => val[1] === undefined)) return undefined
         else return changes
     }
 
-    function getNotificationsUpdates(current: NotificationConfigDto, patch: NotificationConfigDto) {
-        if (patch.libraries.length == 0) {
+    function getNotificationsUpdates(
+        current: NotificationConfigDto,
+        patch: NotificationConfigDto
+    ): NotificationConfigUpdateDto | undefined {
+        if (patch.libraries.length == 0 && current.libraries.length != 0) {
             return {libraries: []}
-        } else if (!patch.libraries.every((v, i) => v === current.libraries[i])) {
+        } else if (patch.libraries.length != 0 && !patch.libraries.every((v, i) => v === current.libraries[i])) {
             return patch as NotificationConfigUpdateDto
         } else return undefined
     }
 
-    function getDiscordUpdates(currentConfig: DiscordConfigDto) {
+    function getDiscordUpdates(currentConfig: DiscordConfigDto): DiscordConfigUpdateDto | undefined {
         let changes: DiscordConfigUpdateDto = {}
         if (notifications.seriesCover != currentConfig?.seriesCover)
             changes.seriesCover = notifications.seriesCover
@@ -351,11 +453,11 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                 changes.webhooks = Object.fromEntries(webhookChanges)
         }
 
-        if (Object.entries(changes).every(val => val[1] == undefined)) return undefined
+        if (Object.entries(changes).every(val => val[1] === undefined)) return undefined
         else return changes
     }
 
-    function getMetadataProvidersUpdates() {
+    function getMetadataProvidersUpdates(): MetadataProvidersConfigUpdateDto | undefined {
         if (!currentConfig.value) throw Error('uninitialized config')
         let currentProvidersConfig = currentConfig.value?.metadataProviders
         let changes: MetadataProvidersConfigUpdateDto = {}
@@ -373,15 +475,17 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
 
         changes.libraryProviders = getLibraryProvidersUpdates()
 
-        if (Object.entries(changes).every(val => val[1] == undefined)) return undefined
+        if (Object.entries(changes).every(val => val[1] === undefined)) return undefined
         else return changes
     }
 
-    function getLibraryProvidersUpdates() {
+    function getLibraryProvidersUpdates(): Record<string, ProvidersConfigUpdateDto> | undefined {
         let currentLibrariesConfig = new Map(Object.entries(currentConfig.value?.metadataProviders?.libraryProviders ?? {}))
         let updatedLibraryProviders = metadataProviders.libraryProviders
             .map(libraryConfig => {
-                let config
+                libraryConfig.providers.forEach((provider, index) => provider.priority = index + 1)
+
+                let config: ProvidersConfigUpdateDto | null | undefined
                 if (libraryConfig.deleted) config = null
                 else config = getProvidersUpdates(
                     currentLibrariesConfig.get(libraryConfig.id),
@@ -393,11 +497,14 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             .filter(val => val[1] !== undefined)
 
         let changes = Object.fromEntries(updatedLibraryProviders)
-        if (Object.entries(changes).every(val => val[1] == undefined)) return undefined
+        if (Object.entries(changes).every(val => val[1] === undefined)) return undefined
         else return changes
     }
 
-    function getProvidersUpdates(current: ProvidersConfigDto | undefined, updated: { [p: string]: ProviderConfigDto }) {
+    function getProvidersUpdates(
+        current: ProvidersConfigDto | undefined,
+        updated: { [p: string]: ProviderConfigDto }
+    ): ProvidersConfigUpdateDto | undefined {
         let changes: ProvidersConfigUpdateDto = {}
         Object.entries(updated).forEach(([key, value]) => {
             switch (key) {
@@ -430,11 +537,14 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             }
         })
 
-        if (Object.entries(changes).every(val => val[1] == undefined)) return undefined
+        if (Object.entries(changes).every(val => val[1] === undefined)) return undefined
         else return changes
     }
 
-    function getProviderUpdates(current: ProviderConfigDto | undefined, updated: ProviderConfigDto) {
+    function getProviderUpdates(
+        current: ProviderConfigDto | undefined,
+        updated: ProviderConfigDto
+    ): ProviderConfigUpdateDto | undefined {
         let changes: ProviderConfigUpdateDto = {}
         if (updated.enabled != current?.enabled)
             changes.enabled = updated.enabled
@@ -447,11 +557,14 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         changes.seriesMetadata = getSeriesMetadataUpdates(current?.seriesMetadata, updated.seriesMetadata)
         changes.bookMetadata = getBookMetadataUpdates(current?.bookMetadata, updated.bookMetadata)
 
-        if (Object.entries(changes).every(val => val[1] == undefined)) return undefined
+        if (Object.entries(changes).every(val => val[1] === undefined)) return undefined
         else return changes
     }
 
-    function getSeriesMetadataUpdates(current: SeriesMetadataConfigDto | undefined, updated: SeriesMetadataConfigDto) {
+    function getSeriesMetadataUpdates(
+        current: SeriesMetadataConfigDto | undefined,
+        updated: SeriesMetadataConfigDto
+    ): SeriesMetadataConfigUpdateDto | undefined {
         let changes: SeriesMetadataConfigUpdateDto = {}
         if (updated.status != current?.status)
             changes.status = updated.status
@@ -481,6 +594,8 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             changes.thumbnail = updated.thumbnail
         if (updated.books != current?.books)
             changes.books = updated.books
+        if (updated.links != current?.links)
+            changes.links = updated.links
         if (updated.useOriginalPublisher != current?.useOriginalPublisher)
             changes.useOriginalPublisher = updated.useOriginalPublisher
         if (updated.originalPublisherTagName != current?.originalPublisherTagName)
@@ -490,11 +605,14 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         if (updated.frenchPublisherTagName != current?.frenchPublisherTagName)
             changes.frenchPublisherTagName = updated.frenchPublisherTagName
 
-        if (Object.entries(changes).every(val => val[1] == undefined)) return undefined
+        if (Object.entries(changes).every(val => val[1] === undefined)) return undefined
         else return changes
     }
 
-    function getBookMetadataUpdates(current: BookMetadataConfigDto | undefined, updated: BookMetadataConfigDto) {
+    function getBookMetadataUpdates(
+        current: BookMetadataConfigDto | undefined,
+        updated: BookMetadataConfigDto
+    ): BookMetadataConfigUpdateDto | undefined {
         let changes: BookMetadataConfigUpdateDto = {}
 
         if (updated.title != current?.title)
@@ -516,7 +634,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         if (updated.thumbnail != current?.thumbnail)
             changes.thumbnail = updated.thumbnail
 
-        if (Object.entries(changes).every(val => val[1] == undefined)) return undefined
+        if (Object.entries(changes).every(val => val[1] === undefined)) return undefined
         else return changes
     }
 
@@ -565,11 +683,18 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
 export interface ProcessingUpdateModel {
     aggregateMetadata: boolean,
     modes: string[],
-    bookThumbnails: boolean,
-    seriesThumbnails: boolean,
     seriesTitle: boolean,
     titleType: string,
+    alternativeTitles: boolean,
+    bookCovers: boolean,
+    seriesCovers: boolean,
     orderBooks?: boolean,
     readingDirectionValue?: null | string,
     languageValue?: null | string,
+}
+
+export interface ProcessingLibraryUpdateModel extends ProcessingUpdateModel {
+    id: string,
+    name: string,
+    deleted: boolean,
 }

@@ -112,12 +112,20 @@ const seriesId = computed(() => {
 })
 
 const libraryId = computed(() => {
-  let pathTokens = window.location.pathname.split('/')
-  console.log(pathTokens)
-  if (pathTokens[1] == 'library') {
-    return pathTokens[2]
+  if (settings.mediaServer == MediaServer.Komga) {
+    return Array.from(document.querySelector('.v-main__wrap .v-toolbar__content')?.children ?? [])
+        .find(el => {
+          let link = el.getAttribute('href')
+          if (!link) return false
+          return /\/libraries.*/.test(link)
+        })?.getAttribute("href")!.split('/')[2]
   } else {
-    return undefined
+    let pathTokens = window.location.pathname.split('/')
+    if (pathTokens[1] == 'library') {
+      return pathTokens[2]
+    } else {
+      return undefined
+    }
   }
 })
 
@@ -145,6 +153,7 @@ async function searchSeries() {
 async function editMetadata() {
   if (seriesId.value) {
     const request: IdentifyRequest = {
+      libraryId: libraryId.value,
       seriesId: seriesId.value,
       provider: selectedResult.value.provider,
       providerSeriesId: selectedResult.value.resultId,

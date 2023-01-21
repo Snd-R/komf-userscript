@@ -17,7 +17,7 @@
         <div class="col" style="padding: 0">
           <q-input
               v-model="config.apiKey"
-              label="Api Key"
+              label="API Key"
               filled
               :disable="apiKeyDisabled"
           />

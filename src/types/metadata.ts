@@ -6,6 +6,7 @@ export interface SearchResult {
 }
 
 export interface IdentifyRequest {
+    libraryId?: string,
     seriesId: string,
     provider: string,
     providerSeriesId: string,

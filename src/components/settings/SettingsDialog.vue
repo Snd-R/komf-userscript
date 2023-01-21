@@ -72,12 +72,12 @@
                           connection
                         </q-btn>
                       </div>
-                      <div class="col-auto offset-md-1" v-if="connectionSuccess"> Connected
+                      <div class="col-auto offset-md-1" v-if="connectionSuccess && !configUpdating"> Connected
                         <q-icon :name="settings.mediaServer === MediaServer.Komga?
                'mdi-check' : 'fa fa-check'"
                                 color="positive"/>
                       </div>
-                      <div class="col-auto offset-md-1" v-if="connectionError"> {{ connectionError }}
+                      <div class="col-auto offset-md-1" v-if="connectionError && !configUpdating"> {{ connectionError }}
                         <q-icon
                             :name="settings.mediaServer === MediaServer.Komga?
                    'mdi-alert-circle': 'fa fa-circle-exclamation'"
@@ -197,6 +197,11 @@ async function updateConfig() {
   configUpdating.value = true
 
   let config = configUpdateStore.getUpdates()
+  if ( Object.entries(config).every(val => val[1] === undefined)) {
+    configUpdating.value = false
+    return
+  }
+
   try {
     await configService.updateConfig(config)
   } catch (e) {
@@ -205,16 +210,16 @@ async function updateConfig() {
     onDialogCancel()
     return
   }
+  await loadConfig()
   let pollRetries = 0
-  do {
+  while (!connectionSuccess.value && pollRetries <= 5) {
     pollRetries += 1
-    await new Promise(resolve => setTimeout(resolve, 200))
+    await new Promise(resolve => setTimeout(resolve, 1000))
     await loadConfig()
   }
-  while (!connectionSuccess.value && pollRetries <= 3)
   configUpdating.value = false
 
-  if (pollRetries >= 3) {
+  if (pollRetries >= 5) {
     quasar.notify({
       message: "Connection Timeout",
       color: 'negative',

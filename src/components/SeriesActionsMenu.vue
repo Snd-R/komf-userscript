@@ -49,6 +49,20 @@ function seriesId() {
     return window.location.pathname.split('/')[4]
 }
 
+function libraryId() {
+  if (settings.mediaServer == MediaServer.Komga) {
+    return Array.from(document.querySelector('.v-main__wrap .v-toolbar__content')?.children ?? [])
+        .find(el => {
+          let link = el.getAttribute('href')
+          if (!link) return false
+          return /\/libraries.*/.test(link)
+        })!.getAttribute("href")!.split('/')[2]
+  } else {
+    let pathTokens = window.location.pathname.split('/')
+    return pathTokens[2]
+  }
+}
+
 function promptIdentifySeries() {
   $q.dialog({
     component: IdentifySeriesDialog,
@@ -77,7 +91,7 @@ function promptResetSeries() {
 
 async function resetSeries() {
   try {
-    await metadataService?.resetSeries(seriesId())
+    await metadataService?.resetSeries(libraryId(), seriesId())
   } catch (e) {
     errorNotification(e, $q)
   }
@@ -86,7 +100,7 @@ async function resetSeries() {
 async function autoIdentify() {
   loading.value = true
   try {
-    await metadataService.matchSeries(seriesId())
+    await metadataService.matchSeries(libraryId(), seriesId())
   } catch (e) {
     errorNotification(e, $q)
   }

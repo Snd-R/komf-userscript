@@ -50,7 +50,7 @@
 
     <q-separator/>
 
-    <q-tab-panels v-model="tab" animated>
+    <q-tab-panels v-model="tab" ref="tabPanel" animated>
       <q-tab-panel name="default" style="padding: 8px 0 0 0">
         <div class="column">
           <div class="col-auto" style="padding: 0">
@@ -107,6 +107,8 @@
                                             label="Genres"/>
                                 <q-checkbox v-model="config.defaultProviders[index].seriesMetadata.language"
                                             label="Language"/>
+                                <q-checkbox v-model="config.defaultProviders[index].seriesMetadata.links"
+                                            label="Links"/>
                                 <q-checkbox v-model="config.defaultProviders[index].seriesMetadata.publisher"
                                             label="Publisher"/>
                                 <q-checkbox v-model="config.defaultProviders[index].seriesMetadata.useOriginalPublisher"
@@ -140,6 +142,9 @@
                                 <q-checkbox v-model="config.defaultProviders[index].bookMetadata.isbn"
                                             :disable="!config.defaultProviders[index].seriesMetadata.books"
                                             label="ISBN"/>
+                                <q-checkbox v-model="config.defaultProviders[index].bookMetadata.links"
+                                            :disable="!config.defaultProviders[index].seriesMetadata.books"
+                                            label="Links"/>
                                 <q-checkbox v-model="config.defaultProviders[index].bookMetadata.number"
                                             :disable="!config.defaultProviders[index].seriesMetadata.books"
                                             label="Number"/>
@@ -319,6 +324,9 @@
                                   v-model="config.libraryProviders[libraryIndex].providers[index].seriesMetadata.language"
                                   label="Language"/>
                               <q-checkbox
+                                  v-model="config.libraryProviders[libraryIndex].providers[index].seriesMetadata.links"
+                                  label="Links"/>
+                              <q-checkbox
                                   v-model="config.libraryProviders[libraryIndex].providers[index].seriesMetadata.publisher"
                                   label="Publisher"/>
                               <q-checkbox
@@ -364,6 +372,10 @@
                                   v-model="config.libraryProviders[libraryIndex].providers[index].bookMetadata.isbn"
                                   :disable="!config.libraryProviders[libraryIndex].providers[index].seriesMetadata.books"
                                   label="ISBN"/>
+                              <q-checkbox
+                                  v-model="config.libraryProviders[libraryIndex].providers[index].bookMetadata.links"
+                                  :disable="!config.libraryProviders[libraryIndex].providers[index].seriesMetadata.books"
+                                  label="Links"/>
                               <q-checkbox
                                   v-model="config.libraryProviders[libraryIndex].providers[index].bookMetadata.number"
                                   :disable="!config.libraryProviders[libraryIndex].providers[index].seriesMetadata.books"
@@ -436,9 +448,9 @@
             <div class="col-auto q-ml-sm">
               <q-icon :name="settings.mediaServer === MediaServer.Komga? 'mdi-plus' :'fa fa-plus'"/>
             </div>
-            <q-menu fit>
+            <q-menu auto-close>
               <q-list v-for="(provider,index) in config.libraryProviders[libraryIndex].disabledProviders">
-                <q-item clickable v-close-popup @click="enableLibraryProvider(libraryIndex,index)">
+                <q-item clickable @click="enableLibraryProvider(libraryIndex,index)">
                   <q-item-section>
                     <q-item-label>{{ provider.name }}</q-item-label>
                   </q-item-section>
@@ -456,7 +468,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from 'vue'
+import {computed, ref, nextTick} from 'vue'
 import {useSettingsStore} from '@/stores/settings'
 import MediaServer from "@/types/mediaServer";
 import {useConfigUpdateStore} from "@/stores/configUpdate";
@@ -465,6 +477,7 @@ import type {SortableOptions} from "sortablejs";
 import type {AutoScrollOptions} from "sortablejs/plugins";
 import type {QExpansionItem} from "quasar";
 import {DefaultProvidersConfig, type ProviderConfigDto} from "@/types/komf-config";
+import {QTabPanels} from "quasar";
 
 const settings = useSettingsStore()
 const configStore = useConfigUpdateStore()
@@ -490,6 +503,8 @@ const sortableOptions = computed<SortableOptions | AutoScrollOptions>(() => {
     forceFallback: true,
   }
 })
+
+const tabPanel = ref<InstanceType<typeof QTabPanels> | null>(null)
 
 const moveItemInArray = <T>(array: T[], from: number, to: number) => {
   const item = array.splice(from, 1)[0];
@@ -535,10 +550,12 @@ function disableLibraryProvider(libraryIndex: number, index: number) {
   config.libraryProviders[libraryIndex].providers.splice(index, 1)
 }
 
-function addLibrary(id: string) {
+async function addLibrary(id: string) {
   let existing = config.libraryProviders.find(library => library.id == id)
   if (existing) {
     existing.deleted = false
+    await nextTick()
+    tabPanel.value?.goTo(id)
     return
   }
 
@@ -559,12 +576,13 @@ function addLibrary(id: string) {
     disabledProviders: defaultProviders
   })
 
-  tab.value = id
+  await nextTick()
+  tabPanel.value?.goTo(id)
 }
 
 function removeLibrary(index: number) {
   config.libraryProviders[index].deleted = true
-  tab.value = 'default'
+  tabPanel.value?.goTo('default')
 }
 
 function getLibraries() {

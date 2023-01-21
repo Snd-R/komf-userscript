@@ -48,16 +48,17 @@ export default class KomfMetadataService {
         } catch (e) {
             let msg = 'Failed to match library'
             if (axios.isAxiosError(e)) {
-                msg += `: ${e.message}`
+                if (e.response?.status == 409) msg += ': Scan is already in progress'
+                else msg += `: ${e.message}`
             }
             throw new Error(msg)
         }
     }
 
-    async matchSeries(seriesId: string) {
+    async matchSeries(libraryId: string, seriesId: string) {
         try {
             await this.http.post(
-                `${this.settings.komfUrl}/${this.settings.mediaServer}/match/series/${seriesId}`
+                `${this.settings.komfUrl}/${this.settings.mediaServer}/match/library/${libraryId}/series/${seriesId}`
             )
         } catch (e) {
             let msg = 'Failed to match series'
@@ -68,10 +69,10 @@ export default class KomfMetadataService {
         }
     }
 
-    async resetSeries(seriesId: string) {
+    async resetSeries(libraryId: string, seriesId: string) {
         try {
             await this.http.post(
-                `${this.settings.komfUrl}/${this.settings.mediaServer}/reset/series/${seriesId}`
+                `${this.settings.komfUrl}/${this.settings.mediaServer}/reset/library/${libraryId}/series/${seriesId}`
             )
         } catch (e) {
             let msg = 'Failed to reset series'

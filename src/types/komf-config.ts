@@ -12,7 +12,6 @@ export interface KomgaConfigUpdateDto {
     eventListener?: EventListenerConfigUpdateDto,
     notifications?: NotificationConfigUpdateDto,
     metadataUpdate?: MetadataUpdateConfigUpdateDto,
-    aggregateMetadata?: boolean,
 }
 
 export interface KavitaConfigUpdateDto {
@@ -41,14 +40,25 @@ export interface NotificationConfigUpdateDto {
 }
 
 export interface MetadataUpdateConfigUpdateDto {
-    readingDirectionValue?: string,
-    languageValue?: string,
-    modes?: string[]
-    bookThumbnails?: boolean,
-    seriesThumbnails?: boolean,
+    default?: MetadataProcessingConfigUpdateDto,
+    library?: Record<string, MetadataProcessingConfigUpdateDto | null>
+}
+
+export interface MetadataProcessingConfigUpdateDto {
+    aggregate?: boolean,
+    bookCovers?: boolean,
+    seriesCovers?: boolean,
+    updateModes?: string[],
+    postProcessing?: MetadataPostProcessingConfigUpdateDto
+}
+
+export interface MetadataPostProcessingConfigUpdateDto {
     seriesTitle?: boolean,
     titleType?: string,
-    orderBooks?: boolean
+    orderBooks?: boolean,
+    alternativeSeriesTitles?: boolean,
+    readingDirectionValue?: string | null,
+    languageValue?: string | null,
 }
 
 export interface MetadataProvidersConfigUpdateDto {
@@ -93,6 +103,7 @@ export interface SeriesMetadataConfigUpdateDto {
     thumbnail?: boolean
     books?: boolean
     useOriginalPublisher?: boolean
+    links?: boolean,
 
     originalPublisherTagName?: string
     englishPublisherTagName?: string
@@ -124,7 +135,6 @@ export interface KomgaConfigDto {
     eventListener: EventListenerConfigDto,
     notifications: NotificationConfigDto,
     metadataUpdate: MetadataUpdateConfigDto,
-    aggregateMetadata: boolean,
 }
 
 export interface KavitaConfigDto {
@@ -132,7 +142,6 @@ export interface KavitaConfigDto {
     eventListener: EventListenerConfigDto,
     notifications: NotificationConfigDto,
     metadataUpdate: MetadataUpdateConfigDto,
-    aggregateMetadata: boolean,
 }
 
 export interface DiscordConfigDto {
@@ -152,14 +161,25 @@ export interface NotificationConfigDto {
 }
 
 export interface MetadataUpdateConfigDto {
-    readingDirectionValue?: string,
-    languageValue?: string,
-    modes: string[]
-    bookThumbnails: boolean,
-    seriesThumbnails: boolean,
+    default: MetadataProcessingConfigDto,
+    library: Record<string, MetadataProcessingConfigDto>
+}
+
+export interface MetadataProcessingConfigDto {
+    aggregate: boolean,
+    bookCovers: boolean,
+    seriesCovers: boolean,
+    updateModes: string[],
+    postProcessing: MetadataPostProcessingConfigDto
+}
+
+export interface MetadataPostProcessingConfigDto {
     seriesTitle: boolean,
     titleType: string,
-    orderBooks: boolean
+    orderBooks: boolean,
+    alternativeSeriesTitles: boolean,
+    readingDirectionValue?: string,
+    languageValue?: string,
 }
 
 export interface MetadataProvidersConfigDto {
@@ -202,6 +222,7 @@ export interface SeriesMetadataConfigDto {
     authors: boolean
     releaseDate: boolean
     thumbnail: boolean
+    links: boolean
     books: boolean
     useOriginalPublisher: boolean
 
@@ -228,6 +249,7 @@ export class DefaultSeriesMetadataConfig implements SeriesMetadataConfigDto {
     books: boolean = true;
     genres: boolean = true;
     language: boolean = true;
+    links: boolean = true;
     publisher: boolean = true;
     readingDirection: boolean = true;
     releaseDate: boolean = true;
