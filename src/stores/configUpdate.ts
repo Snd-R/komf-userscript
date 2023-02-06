@@ -113,7 +113,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
     })
 
     const kavita = reactive({
-        baseUri: 'http://localhost:8080',
+        baseUri: 'http://localhost:5000',
         apiKey: '',
         eventListener: {
             enabled: false,
@@ -410,7 +410,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         let changes: EventListenerConfigUpdateDto = {}
 
         if (patch.enabled != current.enabled)
-            changes.enabled = komga.eventListener.enabled
+            changes.enabled = patch.enabled
 
         if (patch.libraries.length == 0 && current.libraries.length != 0) {
             changes.libraries = []
