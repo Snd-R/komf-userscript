@@ -81,6 +81,7 @@ export interface ProvidersConfigUpdateDto {
 }
 
 export interface ProviderConfigUpdateDto {
+    mediaType?: string,
     nameMatchingMode?: string,
     priority?: number,
     enabled?: boolean,
@@ -204,6 +205,7 @@ export interface ProvidersConfigDto {
 }
 
 export interface ProviderConfigDto {
+    mediaType: string,
     nameMatchingMode?: string,
     priority: number,
     enabled: boolean,
@@ -280,6 +282,7 @@ export class DefaultBookMetadataConfig implements BookMetadataConfigDto {
 export class DefaultProviderConfig implements ProviderConfigDto {
     enabled: boolean = false;
     priority: number = 10;
+    mediaType: string = 'MANGA'
     seriesMetadata: SeriesMetadataConfigDto = new DefaultSeriesMetadataConfig();
     bookMetadata: BookMetadataConfigDto = new DefaultBookMetadataConfig();
 }

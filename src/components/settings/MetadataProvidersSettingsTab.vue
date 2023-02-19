@@ -164,6 +164,14 @@
                                                 expand-separator
                                                 label="Misc">
 
+                                <div v-if="config.defaultProviders[index].mediaTypeEnabled" class="col-auto" style="padding: 8px 0 0 0">
+                                  <q-select v-model="config.defaultProviders[index].mediaType"
+                                            :options="mediaTypeOptions"
+                                            label="Media Type"
+                                            dense
+                                            filled/>
+                                </div>
+
                                 <div class="col-auto" style="padding: 8px 0 0 0">
                                   <q-select v-model="config.defaultProviders[index].nameMatchingMode"
                                             :options="matchingModeOptions"
@@ -398,6 +406,14 @@
                                               dense-toggle
                                               expand-separator
                                               label="Misc">
+                              <div v-if="config.libraryProviders[libraryIndex].providers[index].mediaTypeEnabled" class="col-auto" style="padding: 8px 0 0 0">
+                                <q-select
+                                    v-model="config.libraryProviders[libraryIndex].providers[index].mediaType"
+                                    :options="mediaTypeOptions"
+                                    label="Media Type"
+                                    dense
+                                    filled/>
+                              </div>
                               <div class="col-auto" style="padding: 8px 0 0 0">
                                 <q-select
                                     v-model="config.libraryProviders[libraryIndex].providers[index].nameMatchingMode"
@@ -488,6 +504,7 @@ const tabsKey = computed(() => config.libraryProviders.map(p => p.deleted).join(
 
 const expansionItems = ref<Set<(InstanceType<typeof QExpansionItem> | null)>>(new Set())
 const matchingModeOptions = ['CLOSEST_MATCH', 'EXACT']
+const mediaTypeOptions = ['MANGA', 'NOVEL']
 
 const sortableOptions = computed<SortableOptions | AutoScrollOptions>(() => {
   return {
@@ -562,9 +579,11 @@ async function addLibrary(id: string) {
   let defaultProviders = Object.entries(new DefaultProvidersConfig())
       .map(([key, value]) => {
         let books = configStore.providersWithBooks.includes(key)
+        let mediaTypeEnabled = configStore.providersWithMediaType.includes(key)
         return {
           name: key,
           books: books,
+          mediaTypeEnabled: mediaTypeEnabled,
           ...value as ProviderConfigDto
         }
       })

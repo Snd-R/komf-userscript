@@ -38,6 +38,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
     const libraries = ref([{id: '', name: ''}])
     const currentConfig: Ref<KomfConfigDto | null> = ref(null)
     const providersWithBooks = ['nautiljon', 'yenPress', 'kodansha', 'viz', 'bookWalker', "mangaDex"]
+    const providersWithMediaType = ['mangaUpdates', 'mal', 'nautiljon', 'aniList', 'yenPress', 'bookWalker']
 
     const notifications = reactive({
         komgaLibraries: [] as { name: string | undefined, id: string }[] | null,
@@ -60,12 +61,14 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         defaultProviders: [{
             name: 'MangaUpdates',
             books: false,
+            mediaTypeEnabled: false,
             ...new DefaultProviderConfig() as ProviderConfigDto
         }],
 
         defaultDisabledProviders: [{
             name: 'MangaUpdates',
             books: false,
+            mediaTypeEnabled: false,
             ...new DefaultProviderConfig() as ProviderConfigDto
         }],
         libraryProviders: [{
@@ -75,11 +78,13 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             providers: [{
                 name: 'MangaUpdates',
                 books: false,
+                mediaTypeEnabled: false,
                 ...new DefaultProviderConfig() as ProviderConfigDto
             }],
             disabledProviders: [{
                 name: 'MangaUpdates',
                 books: false,
+                mediaTypeEnabled: false,
                 ...new DefaultProviderConfig() as ProviderConfigDto
             }]
         }]
@@ -167,13 +172,15 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             .sort((a, b) => a[1].priority - b[1].priority)
             .map(([key, value]) => {
                 let books = providersWithBooks.includes(key)
-                return {...(value as ProviderConfigDto), name: key, books: books}
+                let mediaType = providersWithMediaType.includes(key)
+                return {...(value as ProviderConfigDto), name: key, books: books, mediaTypeEnabled: mediaType}
             }).filter(provider => provider.enabled)
 
         metadataProviders.defaultDisabledProviders = Object.entries(config.metadataProviders.defaultProviders)
             .map(([key, value]) => {
                 let books = providersWithBooks.includes(key)
-                return {...(value as ProviderConfigDto), name: key, books: books}
+                let mediaType = providersWithMediaType.includes(key)
+                return {...(value as ProviderConfigDto), name: key, books: books, mediaTypeEnabled: mediaType}
             }).filter(provider => !provider.enabled)
             .sort((a, b) => a.name.localeCompare(b.name))
 
@@ -187,11 +194,13 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                         .sort((a, b) => a[1].priority - b[1].priority)
                         .map(([key, value]) => {
                             let books = providersWithBooks.includes(key)
-                            return {...value as ProviderConfigDto, name: key, books: books}
+                            let mediaType = providersWithMediaType.includes(key)
+                            return {...value as ProviderConfigDto, name: key, books: books, mediaTypeEnabled: mediaType}
                         }).filter(provider => provider.enabled),
                     disabledProviders: Object.entries(value as ProvidersConfigDto).map(([key, value]) => {
                         let books = providersWithBooks.includes(key)
-                        return {...value as ProviderConfigDto, name: key, books: books}
+                        let mediaType = providersWithMediaType.includes(key)
+                        return {...value as ProviderConfigDto, name: key, books: books, mediaTypeEnabled: mediaType}
                     }).filter(provider => !provider.enabled)
                 }
             })
@@ -555,8 +564,8 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             changes.priority = updated.priority
         if (updated.nameMatchingMode != current?.nameMatchingMode)
             changes.nameMatchingMode = updated.nameMatchingMode
-        if (updated.nameMatchingMode != current?.nameMatchingMode)
-            changes.nameMatchingMode = updated.nameMatchingMode
+        if (updated.mediaType != current?.mediaType)
+            changes.mediaType = updated.mediaType
         changes.seriesMetadata = getSeriesMetadataUpdates(current?.seriesMetadata, updated.seriesMetadata)
         changes.bookMetadata = getBookMetadataUpdates(current?.bookMetadata, updated.bookMetadata)
 
@@ -676,6 +685,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         kavitaMetadata,
         libraries,
         providersWithBooks,
+        providersWithMediaType,
         kavita,
         komga,
         reset,
