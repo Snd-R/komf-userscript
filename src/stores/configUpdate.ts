@@ -135,7 +135,8 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             seriesTitle: false,
             seriesTitleLanguage: 'en',
             alternativeTitles: false,
-            alternativeTitleLanguages: ["ja"],
+            alternativeTitleLanguages: ['en', 'ja', 'ja-ro'],
+            orderBooks: false,
             languageValue: null,
         } as ProcessingUpdateModel,
         library: [] as ProcessingLibraryUpdateModel[]
@@ -285,6 +286,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                     seriesCovers: libraryConfig.seriesCovers,
                     seriesTitle: libraryConfig.postProcessing.seriesTitle,
                     seriesTitleLanguage: libraryConfig.postProcessing.seriesTitleLanguage,
+                    orderBooks: libraryConfig.postProcessing.orderBooks,
                     languageValue: libraryConfig.postProcessing.languageValue,
                     alternativeTitles: libraryConfig.postProcessing.alternativeSeriesTitles,
                     alternativeTitleLanguages: libraryConfig.postProcessing.alternativeSeriesTitleLanguages
@@ -708,7 +710,7 @@ export interface ProcessingUpdateModel {
     alternativeTitleLanguages: string[],
     bookCovers: boolean,
     seriesCovers: boolean,
-    orderBooks?: boolean,
+    orderBooks: boolean,
     readingDirectionValue?: null | string,
     languageValue?: null | string,
 }
