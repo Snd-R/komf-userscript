@@ -37,7 +37,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
     const settings = useSettingsStore()
     const libraries = ref([{id: '', name: ''}])
     const currentConfig: Ref<KomfConfigDto | null> = ref(null)
-    const providersWithBooks = ['nautiljon', 'yenPress', 'kodansha', 'viz', 'bookWalker']
+    const providersWithBooks = ['nautiljon', 'yenPress', 'kodansha', 'viz', 'bookWalker', "mangaDex"]
 
     const notifications = reactive({
         komgaLibraries: [] as { name: string | undefined, id: string }[] | null,
@@ -531,6 +531,9 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                     break
                 case 'bookWalker':
                     changes.bookWalker = getProviderUpdates(current?.bookWalker, value as ProviderConfigDto)
+                    break
+                case 'mangaDex':
+                    changes.mangaDex = getProviderUpdates(current?.mangaDex, value as ProviderConfigDto)
                     break
                 default:
                     throw Error('unknown provider')
