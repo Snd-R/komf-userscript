@@ -97,8 +97,9 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             bookCovers: false,
             seriesCovers: false,
             seriesTitle: false,
-            titleType: 'LOCALIZED',
+            seriesTitleLanguage: 'en',
             alternativeTitles: false,
+            alternativeTitleLanguages: ['en', 'ja', 'ja-ro'],
             orderBooks: false,
             readingDirectionValue: null,
             languageValue: null,
@@ -132,8 +133,9 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             bookCovers: false,
             seriesCovers: false,
             seriesTitle: false,
-            titleType: 'LOCALIZED',
+            seriesTitleLanguage: 'en',
             alternativeTitles: false,
+            alternativeTitleLanguages: ["ja"],
             languageValue: null,
         } as ProcessingUpdateModel,
         library: [] as ProcessingLibraryUpdateModel[]
@@ -223,11 +225,12 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         komgaMetadata.default.bookCovers = config.komga.metadataUpdate.default.bookCovers
         komgaMetadata.default.seriesCovers = config.komga.metadataUpdate.default.seriesCovers
         komgaMetadata.default.seriesTitle = config.komga.metadataUpdate.default.postProcessing.seriesTitle
-        komgaMetadata.default.titleType = config.komga.metadataUpdate.default.postProcessing.titleType
+        komgaMetadata.default.seriesTitleLanguage = config.komga.metadataUpdate.default.postProcessing.seriesTitleLanguage
         komgaMetadata.default.orderBooks = config.komga.metadataUpdate.default.postProcessing.orderBooks
         komgaMetadata.default.readingDirectionValue = config.komga.metadataUpdate.default.postProcessing.readingDirectionValue
         komgaMetadata.default.languageValue = config.komga.metadataUpdate.default.postProcessing.languageValue
         komgaMetadata.default.alternativeTitles = config.komga.metadataUpdate.default.postProcessing.alternativeSeriesTitles
+        komgaMetadata.default.alternativeTitleLanguages = config.komga.metadataUpdate.default.postProcessing.alternativeSeriesTitleLanguages
 
         komgaMetadata.library = Object.entries(config.komga.metadataUpdate.library)
             .map(([libraryId, libraryConfig]) => {
@@ -240,11 +243,12 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                     bookCovers: libraryConfig.bookCovers,
                     seriesCovers: libraryConfig.seriesCovers,
                     seriesTitle: libraryConfig.postProcessing.seriesTitle,
-                    titleType: libraryConfig.postProcessing.titleType,
+                    seriesTitleLanguage: libraryConfig.postProcessing.seriesTitleLanguage,
                     orderBooks: libraryConfig.postProcessing.orderBooks,
                     readingDirectionValue: libraryConfig.postProcessing.readingDirectionValue,
                     languageValue: libraryConfig.postProcessing.languageValue,
-                    alternativeTitles: libraryConfig.postProcessing.alternativeSeriesTitles
+                    alternativeTitles: libraryConfig.postProcessing.alternativeSeriesTitles,
+                    alternativeTitleLanguages: libraryConfig.postProcessing.alternativeSeriesTitleLanguages
                 }
             })
 
@@ -264,9 +268,10 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         kavitaMetadata.default.bookCovers = config.kavita.metadataUpdate.default.bookCovers
         kavitaMetadata.default.seriesCovers = config.kavita.metadataUpdate.default.seriesCovers
         kavitaMetadata.default.seriesTitle = config.kavita.metadataUpdate.default.postProcessing.seriesTitle
-        kavitaMetadata.default.titleType = config.kavita.metadataUpdate.default.postProcessing.titleType
+        kavitaMetadata.default.seriesTitleLanguage = config.kavita.metadataUpdate.default.postProcessing.seriesTitleLanguage
         kavitaMetadata.default.languageValue = config.kavita.metadataUpdate.default.postProcessing.languageValue
         kavitaMetadata.default.alternativeTitles = config.kavita.metadataUpdate.default.postProcessing.alternativeSeriesTitles
+        kavitaMetadata.default.alternativeTitleLanguages = config.kavita.metadataUpdate.default.postProcessing.alternativeSeriesTitleLanguages
 
         kavitaMetadata.library = Object.entries(config.kavita.metadataUpdate.library)
             .map(([libraryId, libraryConfig]) => {
@@ -279,9 +284,10 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                     bookCovers: libraryConfig.bookCovers,
                     seriesCovers: libraryConfig.seriesCovers,
                     seriesTitle: libraryConfig.postProcessing.seriesTitle,
-                    titleType: libraryConfig.postProcessing.titleType,
+                    seriesTitleLanguage: libraryConfig.postProcessing.seriesTitleLanguage,
                     languageValue: libraryConfig.postProcessing.languageValue,
-                    alternativeTitles: libraryConfig.postProcessing.alternativeSeriesTitles
+                    alternativeTitles: libraryConfig.postProcessing.alternativeSeriesTitles,
+                    alternativeTitleLanguages: libraryConfig.postProcessing.alternativeSeriesTitleLanguages
                 }
             })
     }
@@ -372,14 +378,14 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         let postProcessingChanges: MetadataPostProcessingConfigUpdateDto | undefined = {}
         if (patch.seriesTitle != current?.postProcessing.seriesTitle)
             postProcessingChanges.seriesTitle = patch.seriesTitle
-        if (patch.titleType != current?.postProcessing.titleType)
-            postProcessingChanges.titleType = patch.titleType
+        if (patch.seriesTitleLanguage != current?.postProcessing.seriesTitleLanguage)
+            postProcessingChanges.seriesTitleLanguage = patch.seriesTitleLanguage
         if (patch.alternativeTitles != current?.postProcessing.alternativeSeriesTitles)
             postProcessingChanges.alternativeSeriesTitles = patch.alternativeTitles
+        if (patch.alternativeTitleLanguages != current?.postProcessing.alternativeSeriesTitleLanguages)
+            postProcessingChanges.alternativeSeriesTitleLanguages = patch.alternativeTitleLanguages
         if (patch.orderBooks != current?.postProcessing.orderBooks)
             postProcessingChanges.orderBooks = patch.orderBooks
-        if (patch.alternativeTitles != current?.postProcessing.alternativeSeriesTitles)
-            postProcessingChanges.alternativeSeriesTitles = patch.alternativeTitles
         if (patch.readingDirectionValue != current?.postProcessing.readingDirectionValue)
             postProcessingChanges.readingDirectionValue = patch.readingDirectionValue
         if (patch.languageValue != current?.postProcessing.languageValue)
@@ -697,8 +703,9 @@ export interface ProcessingUpdateModel {
     aggregateMetadata: boolean,
     modes: string[],
     seriesTitle: boolean,
-    titleType: string,
+    seriesTitleLanguage: string,
     alternativeTitles: boolean,
+    alternativeTitleLanguages: string[],
     bookCovers: boolean,
     seriesCovers: boolean,
     orderBooks?: boolean,

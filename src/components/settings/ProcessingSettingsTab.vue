@@ -58,6 +58,10 @@
         </div>
 
         <div class="col-auto" style="padding: 8px 0 0 0">
+          <q-checkbox v-model="model.default.orderBooks" label="Order Books"/>
+        </div>
+
+        <div class="col-auto" style="padding: 8px 0 0 0">
           <div class="row">
             <div class="col-auto">
               <q-checkbox v-model="model.default.seriesCovers" label="Series Cover"/>
@@ -74,26 +78,44 @@
             <div class="col-auto">
               <q-checkbox v-model="model.default.seriesTitle" label="Series Title"/>
             </div>
-            <div class="col-auto" style="width: 200px; padding: 0 0 0 16px">
-              <q-select
-                  filled
-                  dense
-                  v-model="model.default.titleType"
-                  :options="titleOptions"
-                  label="Title Type"
-                  dropdown-icon="mdi-menu-down"/>
+            <div class="col-auto">
+              <q-checkbox v-model="model.default.alternativeTitles" label="Alternative Series Titles"/>
             </div>
           </div>
         </div>
 
         <div class="col-auto" style="padding: 8px 0 0 0">
-          <q-checkbox v-model="model.default.alternativeTitles" label="Alternative Series Titles"/>
-        </div>
+          <div class="row">
+            <div class="col-auto" style="width: 200px; margin: 0 16px 0 0">
+              <q-input
+                  v-model="model.default.seriesTitleLanguage"
+                  label="Title Language"
+                  filled
+                  dense
+                  hint="BCP 47 language tag. ja-ro for romanized"
+                  hide-hint
+                  :rules="[val => isLangCode(val).res]"
+              />
+            </div>
 
-        <div v-if="settings.mediaServer === MediaServer.Komga"
-             class="col-auto"
-             style="padding: 8px 0 0 0">
-          <q-checkbox v-model="model.default.orderBooks" label="Order Books"/>
+            <div class="col-auto" style="width: 250px">
+              <q-select
+                  v-model="model.default.alternativeTitleLanguages"
+                  label="Alternative Title Languages"
+                  filled
+                  dense
+                  use-input
+                  use-chips
+                  multiple
+                  hide-dropdown-icon
+                  input-debounce="0"
+                  @new-value="createValue"
+                  hint="BCP 47 language tag. ja-ro for romanized"
+                  hide-hint
+              />
+            </div>
+
+          </div>
         </div>
 
         <div class="col-auto" style="width: 200px; padding: 8px 0 0 0">
@@ -115,6 +137,7 @@
               <q-select
                   filled
                   dense
+                  clearable
                   v-model="model.default.readingDirectionValue"
                   :options="readingDirectionOptions"
                   label="Default Reading Direction"
@@ -128,9 +151,10 @@
                   label="Series Default Language"
                   dense
                   filled
+                  clearable
                   hint="IETF BCP 47 language tag"
                   hide-hint
-                  :rules="[val => val==='' || val===null || isLangCode(val).res]"
+                  :rules="[val => val==='' || val==null || isLangCode(val).res]"
               />
             </div>
           </div>
@@ -144,6 +168,10 @@
         <div class="column">
           <div class="col-auto">
             <q-checkbox v-model="model.library[libraryIndex].aggregateMetadata" label="Aggregate from all providers"/>
+          </div>
+
+          <div class="col-auto" style="padding: 8px 0 0 0">
+            <q-checkbox v-model="model.library[libraryIndex].orderBooks" label="Order Books"/>
           </div>
 
           <div class="col-auto" style="padding: 8px 0 0 0">
@@ -163,26 +191,43 @@
               <div class="col-auto">
                 <q-checkbox v-model="model.library[libraryIndex].seriesTitle" label="Series Title"/>
               </div>
-              <div class="col-auto" style="width: 200px; padding: 0 0 0 16px">
-                <q-select
-                    filled
-                    dense
-                    v-model="model.library[libraryIndex].titleType"
-                    :options="titleOptions"
-                    label="Title Type"
-                    dropdown-icon="mdi-menu-down"/>
+              <div class="col-auto">
+                <q-checkbox v-model="model.library[libraryIndex].alternativeTitles" label="Alternative Series Titles"/>
               </div>
             </div>
           </div>
 
           <div class="col-auto" style="padding: 8px 0 0 0">
-            <q-checkbox v-model="model.library[libraryIndex].alternativeTitles" label="Alternative Series Titles"/>
-          </div>
+            <div class="row">
+              <div class="col-auto" style="width: 200px; margin: 0 16px 0 0">
+                <q-input
+                    v-model="model.library[libraryIndex].seriesTitleLanguage"
+                    label="Title Language"
+                    filled
+                    dense
+                    hint="BCP 47 language tag. ja-ro for romanized"
+                    hide-hint
+                    :rules="[val => isLangCode(val).res]"
+                />
+              </div>
 
-          <div v-if="settings.mediaServer === MediaServer.Komga"
-               class="col-auto"
-               style="padding: 8px 0 0 0">
-            <q-checkbox v-model="model.library[libraryIndex].orderBooks" label="Order Books"/>
+              <div class="col-auto" style="width: 250px">
+                <q-select
+                    v-model="model.library[libraryIndex].alternativeTitleLanguages"
+                    label="Alternative Title Languages"
+                    filled
+                    dense
+                    use-input
+                    use-chips
+                    multiple
+                    hide-dropdown-icon
+                    input-debounce="0"
+                    new-value-mode="add-unique"
+                    hint="BCP 47 language tag. ja-ro for romanized"
+                    hide-hint
+                />
+              </div>
+            </div>
           </div>
 
           <div class="col-auto" style="width: 200px; padding: 8px 0 0 0">
@@ -204,6 +249,7 @@
                 <q-select
                     filled
                     dense
+                    clearable
                     v-model="model.library[libraryIndex].readingDirectionValue"
                     :options="readingDirectionOptions"
                     label="Default Reading Direction"
@@ -217,9 +263,10 @@
                     label="Series Default Language"
                     dense
                     filled
+                    clearable
                     hint="IETF BCP 47 language tag"
                     hide-hint
-                    :rules="[val => val==='' || val===null || isLangCode(val).res]"
+                    :rules="[val => val==='' || val==null || isLangCode(val).res]"
                 />
               </div>
             </div>
@@ -236,7 +283,7 @@ import {useSettingsStore} from '@/stores/settings'
 import {useConfigUpdateStore} from "@/stores/configUpdate";
 import {isLangCode} from "is-language-code";
 import MediaServer from "@/types/mediaServer";
-import {QInput, QTabPanels} from "quasar";
+import {QInput, QSelect, QTabPanels} from "quasar";
 import {computed, nextTick, ref} from "vue";
 
 const settings = useSettingsStore()
@@ -244,7 +291,6 @@ let config = useConfigUpdateStore()
 
 
 const updateModeOptions = ['API', 'COMIC_INFO']
-const titleOptions = ['LOCALIZED', 'ROMAJI', 'NATIVE']
 const readingDirectionOptions = ['LEFT_TO_RIGHT', 'RIGHT_TO_LEFT', 'VERTICAL', 'WEBTOON']
 const model = settings.mediaServer === MediaServer.Kavita
     ? config.kavitaMetadata
@@ -272,8 +318,9 @@ async function addLibrary(id: string) {
     bookCovers: false,
     seriesCovers: false,
     seriesTitle: false,
-    titleType: 'LOCALIZED',
+    seriesTitleLanguage: 'en',
     alternativeTitles: false,
+    alternativeTitleLanguages: ['en', 'ja', 'ja-ro'],
     orderBooks: false,
     readingDirectionValue: null,
     languageValue: null,
@@ -291,6 +338,10 @@ function removeLibrary(index: number) {
 function getLibraries() {
   let libraryConfigs = model.library
   return config.libraries.filter(library => !libraryConfigs.find(conf => !conf.deleted && conf.id == library.id))
+}
+
+function createValue(val: string, done: Function) {
+  if (isLangCode(val).res) done(val, 'add-unique')
 }
 
 </script>

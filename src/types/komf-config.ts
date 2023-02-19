@@ -54,9 +54,10 @@ export interface MetadataProcessingConfigUpdateDto {
 
 export interface MetadataPostProcessingConfigUpdateDto {
     seriesTitle?: boolean,
-    titleType?: string,
+    seriesTitleLanguage?: string,
     orderBooks?: boolean,
     alternativeSeriesTitles?: boolean,
+    alternativeSeriesTitleLanguages?: string[],
     readingDirectionValue?: string | null,
     languageValue?: string | null,
 }
@@ -177,9 +178,10 @@ export interface MetadataProcessingConfigDto {
 
 export interface MetadataPostProcessingConfigDto {
     seriesTitle: boolean,
-    titleType: string,
+    seriesTitleLanguage: string,
     orderBooks: boolean,
     alternativeSeriesTitles: boolean,
+    alternativeSeriesTitleLanguages: string[],
     readingDirectionValue?: string,
     languageValue?: string,
 }
