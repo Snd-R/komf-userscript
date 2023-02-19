@@ -79,6 +79,9 @@
 :deep(.q-field__append) {
   width: auto;
 }
+:deep(.q-chip) {
+  width: auto;
+}
 
 @media (min-width: 0) {
   :deep(.col,.col-xs) {
