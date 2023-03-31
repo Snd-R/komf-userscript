@@ -1,9 +1,8 @@
 // ==UserScript==
 // @name         Komf
-// @namespace    http://tampermonkey.net/
+// @namespace    https://github.com/Snd-R/komf-userscript
 // @version      0.8.0
-// @license      MIT
-// @description  komf userscript
+// @description  Komf userscript
 // @author       snd-r
 // @include      http://localhost:8080/*
 // @include      http://localhost:5000/*
