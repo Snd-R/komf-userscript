@@ -85,10 +85,10 @@ const observer = new window.MutationObserver((mutations) => {
 
       let toolbar = (<Element>node).querySelector('.v-main__wrap .v-toolbar__content')
       if (toolbar && toolbar.parentElement && !toolbar.parentElement.classList.contains('hidden-sm-and-up')) {
-        const type = window.location.pathname.split('/')[1]
-        if (type == 'libraries') {
+        const path_split = window.location.pathname.split('/').reverse()
+        if (path_split.find(el => el == "libraries")) {
           toolbar?.children[4].insertAdjacentElement('afterend', libraryActionsElement.value)
-        } else if (type == 'series') {
+        } else if (path_split.find(el => el == "series")) {
           toolbar?.children[4].insertAdjacentElement('afterend', seriesActionsElement.value)
         }
       }

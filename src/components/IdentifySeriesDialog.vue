@@ -102,13 +102,8 @@ const searchResults = ref<SearchResult[]>()
 const selectedResult = ref<SearchResult>({} as SearchResult)
 
 const seriesId = computed(() => {
-  const pathNameArray = window.location.pathname.split('/') || ['']
-  let seriesId = pathNameArray.pop()
-  if (seriesId === '') {
-    seriesId = pathNameArray.pop()
-  }
-
-  return seriesId
+  let path = window.location.pathname.split('/')
+  return path[path.findIndex(el => el == 'series') + 1]
 })
 
 const libraryId = computed(() => {

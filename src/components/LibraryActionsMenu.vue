@@ -16,12 +16,20 @@ import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
 import {komfMetadataKey} from '@/injection-keys'
 import {errorNotification} from '@/errorNotification'
 import {useQuasar} from 'quasar';
+import {useSettingsStore} from "@/stores/settings";
+import MediaServer from "@/types/mediaServer";
 
 const $q = useQuasar();
 const metadataService = inject<KomfMetadataService>(komfMetadataKey) as KomfMetadataService
+const settings = useSettingsStore()
 
 function libraryId() {
-  return window.location.pathname.split('/')[2]
+  let pathTokens = window.location.pathname.split('/')
+  if (settings.mediaServer == MediaServer.Komga) {
+    return pathTokens[pathTokens.findIndex(el => el == 'libraries') + 1]
+  } else {
+    return pathTokens[pathTokens.findIndex(el => el == 'library') + 1]
+  }
 }
 
 async function autoIdentify() {

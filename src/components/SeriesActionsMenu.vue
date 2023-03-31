@@ -43,10 +43,8 @@ function seriesTitle() {
 }
 
 function seriesId() {
-  if (settings.mediaServer == MediaServer.Komga)
-    return window.location.pathname.split('/')[2]
-  else
-    return window.location.pathname.split('/')[4]
+  let path = window.location.pathname.split('/')
+  return path[path.findIndex(el => el == 'series') + 1]
 }
 
 function libraryId() {
@@ -59,7 +57,7 @@ function libraryId() {
         })!.getAttribute("href")!.split('/')[2]
   } else {
     let pathTokens = window.location.pathname.split('/')
-    return pathTokens[2]
+    return pathTokens[pathTokens.findIndex(el => el == 'library') + 1]
   }
 }
 
