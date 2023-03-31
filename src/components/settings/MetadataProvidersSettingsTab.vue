@@ -666,7 +666,7 @@ function getLibraries() {
 
 .drag {
   background: $dark;
-  max-height: 85px;
+  max-height: 82px;
   overflow: hidden;
 }
 </style>
