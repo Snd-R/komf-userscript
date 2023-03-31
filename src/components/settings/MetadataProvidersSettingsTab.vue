@@ -164,7 +164,8 @@
                                                 expand-separator
                                                 label="Misc">
 
-                                <div v-if="config.defaultProviders[index].mediaTypeEnabled" class="col-auto" style="padding: 8px 0 0 0">
+                                <div v-if="config.defaultProviders[index].mediaTypeEnabled" class="col-auto"
+                                     style="padding: 8px 0 0 0">
                                   <q-select v-model="config.defaultProviders[index].mediaType"
                                             :options="mediaTypeOptions"
                                             label="Media Type"
@@ -179,6 +180,24 @@
                                             dense
                                             filled
                                             clearable/>
+                                </div>
+
+                                <div class="col-auto" style="padding: 8px 0 0 0">
+                                  <q-select v-model="config.defaultProviders[index].authorRoles"
+                                            :options="rolesOptions"
+                                            dense
+                                            filled
+                                            multiple
+                                            label="Author Roles"/>
+                                </div>
+
+                                <div class="col-auto" style="padding: 8px 0 0 0">
+                                  <q-select v-model="config.defaultProviders[index].artistRoles"
+                                            :options="rolesOptions"
+                                            dense
+                                            filled
+                                            multiple
+                                            label="Artist Roles"/>
                                 </div>
 
                                 <div class="col-auto" style="padding: 8px 0 0 0">
@@ -406,7 +425,8 @@
                                               dense-toggle
                                               expand-separator
                                               label="Misc">
-                              <div v-if="config.libraryProviders[libraryIndex].providers[index].mediaTypeEnabled" class="col-auto" style="padding: 8px 0 0 0">
+                              <div v-if="config.libraryProviders[libraryIndex].providers[index].mediaTypeEnabled"
+                                   class="col-auto" style="padding: 8px 0 0 0">
                                 <q-select
                                     v-model="config.libraryProviders[libraryIndex].providers[index].mediaType"
                                     :options="mediaTypeOptions"
@@ -423,6 +443,25 @@
                                     filled
                                     clearable/>
                               </div>
+
+                              <div class="col-auto" style="padding: 8px 0 0 0">
+                                <q-select v-model="config.libraryProviders[libraryIndex].providers[index].authorRoles"
+                                          :options="rolesOptions"
+                                          dense
+                                          filled
+                                          multiple
+                                          label="Author Roles"/>
+                              </div>
+
+                              <div class="col-auto" style="padding: 8px 0 0 0">
+                                <q-select v-model="config.libraryProviders[libraryIndex].providers[index].artistRoles"
+                                          :options="rolesOptions"
+                                          dense
+                                          filled
+                                          multiple
+                                          label="Artist Roles"/>
+                              </div>
+
                               <div class="col-auto" style="padding: 8px 0 0 0">
                                 <q-input
                                     v-model="config.libraryProviders[libraryIndex].providers[index].seriesMetadata.englishPublisherTagName"
@@ -484,7 +523,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref, nextTick} from 'vue'
+import {computed, nextTick, ref} from 'vue'
 import {useSettingsStore} from '@/stores/settings'
 import MediaServer from "@/types/mediaServer";
 import {useConfigUpdateStore} from "@/stores/configUpdate";
@@ -492,8 +531,8 @@ import {Sortable} from "sortablejs-vue3";
 import type {SortableOptions} from "sortablejs";
 import type {AutoScrollOptions} from "sortablejs/plugins";
 import type {QExpansionItem} from "quasar";
-import {DefaultProvidersConfig, type ProviderConfigDto} from "@/types/komf-config";
 import {QTabPanels} from "quasar";
+import {DefaultProvidersConfig, type ProviderConfigDto} from "@/types/komf-config";
 
 const settings = useSettingsStore()
 const configStore = useConfigUpdateStore()
@@ -504,6 +543,7 @@ const tabsKey = computed(() => config.libraryProviders.map(p => p.deleted).join(
 
 const expansionItems = ref<Set<(InstanceType<typeof QExpansionItem> | null)>>(new Set())
 const matchingModeOptions = ['CLOSEST_MATCH', 'EXACT']
+const rolesOptions = ['WRITER', 'PENCILLER', 'INKER', 'COLORIST', 'LETTERER', 'COVER', 'EDITOR', 'TRANSLATOR']
 const mediaTypeOptions = ['MANGA', 'NOVEL']
 
 const sortableOptions = computed<SortableOptions | AutoScrollOptions>(() => {
@@ -626,7 +666,7 @@ function getLibraries() {
 
 .drag {
   background: $dark;
-  max-height: 88px;
+  max-height: 85px;
   overflow: hidden;
 }
 </style>

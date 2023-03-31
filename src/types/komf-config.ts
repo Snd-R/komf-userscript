@@ -26,7 +26,6 @@ export interface KavitaConfigUpdateDto {
 export interface DiscordConfigUpdateDto {
     webhooks?: Record<number, (string | null)>,
     seriesCover?: boolean,
-    imgurClientId?: string,
 }
 
 export interface EventListenerConfigUpdateDto {
@@ -46,6 +45,8 @@ export interface MetadataUpdateConfigUpdateDto {
 
 export interface MetadataProcessingConfigUpdateDto {
     aggregate?: boolean,
+    mergeTags?: boolean,
+    mergeGenres?: boolean,
     bookCovers?: boolean,
     seriesCovers?: boolean,
     updateModes?: string[],
@@ -84,6 +85,8 @@ export interface ProvidersConfigUpdateDto {
 export interface ProviderConfigUpdateDto {
     mediaType?: string,
     nameMatchingMode?: string,
+    authorRoles?: string[],
+    artistRoles?: string[],
     priority?: number,
     enabled?: boolean,
     seriesMetadata?: SeriesMetadataConfigUpdateDto,
@@ -150,7 +153,6 @@ export interface KavitaConfigDto {
 export interface DiscordConfigDto {
     webhooks?: Record<number, string>,
     seriesCover: boolean,
-    imgurClientId?: string,
 }
 
 export interface EventListenerConfigDto {
@@ -170,6 +172,8 @@ export interface MetadataUpdateConfigDto {
 
 export interface MetadataProcessingConfigDto {
     aggregate: boolean,
+    mergeTags: boolean,
+    mergeGenres: boolean,
     bookCovers: boolean,
     seriesCovers: boolean,
     updateModes: string[],
@@ -209,6 +213,8 @@ export interface ProvidersConfigDto {
 export interface ProviderConfigDto {
     mediaType: string,
     nameMatchingMode?: string,
+    authorRoles: string[],
+    artistRoles: string[],
     priority: number,
     enabled: boolean,
     seriesMetadata: SeriesMetadataConfigDto,
@@ -284,6 +290,8 @@ export class DefaultBookMetadataConfig implements BookMetadataConfigDto {
 export class DefaultProviderConfig implements ProviderConfigDto {
     enabled: boolean = false;
     priority: number = 10;
+    authorRoles: string[] = ['WRITER']
+    artistRoles: string[] = ['PENCILLER', 'INKER', 'COLORIST', 'LETTERER', 'COVER']
     mediaType: string = 'MANGA'
     seriesMetadata: SeriesMetadataConfigDto = new DefaultSeriesMetadataConfig();
     bookMetadata: BookMetadataConfigDto = new DefaultBookMetadataConfig();

@@ -50,8 +50,6 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             }
         ],
         seriesCover: false,
-        imgurClientId: '',
-        imgurClientIdDisabled: false
     })
 
     const metadataProviders = reactive({
@@ -93,6 +91,8 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
     const komgaMetadata = reactive({
         default: {
             aggregateMetadata: false,
+            mergeTags: false,
+            mergeGenres: false,
             modes: ['API'],
             bookCovers: false,
             seriesCovers: false,
@@ -129,6 +129,8 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
     const kavitaMetadata = reactive({
         default: {
             aggregateMetadata: false,
+            mergeTags: false,
+            mergeGenres: false,
             modes: ['API'],
             bookCovers: false,
             seriesCovers: false,
@@ -151,8 +153,6 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                 return {value: value, existing: true}
             })
         notifications.seriesCover = config.discord?.seriesCover
-        notifications.imgurClientId = config.discord?.imgurClientId ?? ''
-        notifications.imgurClientIdDisabled = config.discord?.imgurClientId != undefined
         notifications.komgaLibraries = config.komga.notifications.libraries
             .map(id => {
                 return {
@@ -222,6 +222,8 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             })
 
         komgaMetadata.default.aggregateMetadata = config.komga.metadataUpdate.default.aggregate
+        komgaMetadata.default.mergeTags = config.komga.metadataUpdate.default.mergeTags
+        komgaMetadata.default.mergeGenres = config.komga.metadataUpdate.default.mergeGenres
         komgaMetadata.default.modes = config.komga.metadataUpdate.default.updateModes
         komgaMetadata.default.bookCovers = config.komga.metadataUpdate.default.bookCovers
         komgaMetadata.default.seriesCovers = config.komga.metadataUpdate.default.seriesCovers
@@ -240,6 +242,8 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                     name: libraries.value.find(l => l.id == libraryId)?.name ?? '',
                     deleted: false,
                     aggregateMetadata: libraryConfig.aggregate,
+                    mergeTags: libraryConfig.mergeTags,
+                    mergeGenres: libraryConfig.mergeGenres,
                     modes: libraryConfig.updateModes,
                     bookCovers: libraryConfig.bookCovers,
                     seriesCovers: libraryConfig.seriesCovers,
@@ -265,6 +269,8 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         kavita.apiKey = ''
 
         kavitaMetadata.default.aggregateMetadata = config.kavita.metadataUpdate.default.aggregate
+        kavitaMetadata.default.mergeTags = config.kavita.metadataUpdate.default.mergeTags
+        kavitaMetadata.default.mergeGenres = config.kavita.metadataUpdate.default.mergeGenres
         kavitaMetadata.default.modes = config.kavita.metadataUpdate.default.updateModes
         kavitaMetadata.default.bookCovers = config.kavita.metadataUpdate.default.bookCovers
         kavitaMetadata.default.seriesCovers = config.kavita.metadataUpdate.default.seriesCovers
@@ -281,6 +287,8 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                     name: libraries.value.find(l => l.id == libraryId)?.name ?? '',
                     deleted: false,
                     aggregateMetadata: libraryConfig.aggregate,
+                    mergeTags: libraryConfig.mergeTags,
+                    mergeGenres: libraryConfig.mergeGenres,
                     modes: libraryConfig.updateModes,
                     bookCovers: libraryConfig.bookCovers,
                     seriesCovers: libraryConfig.seriesCovers,
@@ -370,6 +378,10 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         let changes: MetadataProcessingConfigUpdateDto = {}
         if (patch.aggregateMetadata != current?.aggregate)
             changes.aggregate = patch.aggregateMetadata
+        if (patch.mergeTags != current?.mergeTags)
+            changes.mergeTags = patch.mergeTags
+        if (patch.mergeGenres != current?.mergeGenres)
+            changes.mergeGenres = patch.mergeGenres
         if (patch.bookCovers != current?.bookCovers)
             changes.bookCovers = patch.bookCovers
         if (patch.seriesCovers != current?.seriesCovers)
@@ -454,8 +466,6 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         let changes: DiscordConfigUpdateDto = {}
         if (notifications.seriesCover != currentConfig?.seriesCover)
             changes.seriesCover = notifications.seriesCover
-        if (notifications.imgurClientId != currentConfig?.imgurClientId)
-            changes.imgurClientId = notifications.imgurClientId
 
         if (JSON.stringify(notifications.webhooks) != JSON.stringify(currentConfig?.webhooks)) {
             let oldEntries = Object.entries(currentConfig?.webhooks ?? {})
@@ -572,6 +582,10 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             changes.priority = updated.priority
         if (updated.nameMatchingMode != current?.nameMatchingMode)
             changes.nameMatchingMode = updated.nameMatchingMode
+        if (updated.authorRoles != current?.authorRoles)
+            changes.authorRoles = updated.authorRoles
+        if (updated.artistRoles != current?.artistRoles)
+            changes.artistRoles = updated.artistRoles
         if (updated.mediaType != current?.mediaType)
             changes.mediaType = updated.mediaType
         changes.seriesMetadata = getSeriesMetadataUpdates(current?.seriesMetadata, updated.seriesMetadata)
@@ -703,6 +717,8 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
 
 export interface ProcessingUpdateModel {
     aggregateMetadata: boolean,
+    mergeTags: boolean,
+    mergeGenres: boolean,
     modes: string[],
     seriesTitle: boolean,
     seriesTitleLanguage: string,

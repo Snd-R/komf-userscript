@@ -53,8 +53,20 @@
   <q-tab-panels v-model="tab" ref="tabPanel" animated>
     <q-tab-panel name="default" style="padding: 8px 0 0 0">
       <div class="column">
-        <div class="col-auto">
-          <q-checkbox v-model="model.default.aggregateMetadata" label="Aggregate from all providers"/>
+        <div class="row">
+          <div class="col-auto">
+            <q-checkbox v-model="model.default.aggregateMetadata" label="Aggregate from all providers"/>
+          </div>
+          <div class="col-auto">
+            <q-checkbox v-model="model.default.mergeGenres"
+                        :disable="!model.default.aggregateMetadata"
+                        label="Merge Genres"/>
+          </div>
+          <div class="col-auto">
+            <q-checkbox v-model="model.default.mergeTags"
+                        :disable="!model.default.aggregateMetadata"
+                        label="Merge Tags"/>
+          </div>
         </div>
 
         <div class="col-auto" style="padding: 8px 0 0 0">
@@ -166,8 +178,21 @@
     <template v-for="(library,libraryIndex) in model.library" :key="library.id">
       <q-tab-panel :name="library.id" v-if="!library.deleted" style="padding: 8px 0 0 0">
         <div class="column">
-          <div class="col-auto">
-            <q-checkbox v-model="model.library[libraryIndex].aggregateMetadata" label="Aggregate from all providers"/>
+          <div class="row">
+            <div class="col-auto">
+              <q-checkbox v-model="model.library[libraryIndex].aggregateMetadata" label="Aggregate from all providers"/>
+            </div>
+
+            <div class="col-auto">
+              <q-checkbox v-model="model.library[libraryIndex].mergeGenres"
+                          :disable="!model.library[libraryIndex].aggregateMetadata"
+                          label="Merge Genres"/>
+            </div>
+            <div class="col-auto">
+              <q-checkbox v-model="model.library[libraryIndex].mergeTags"
+                          :disable="!model.library[libraryIndex].aggregateMetadata"
+                          label="Merge Tags"/>
+            </div>
           </div>
 
           <div class="col-auto" style="padding: 8px 0 0 0">
@@ -314,6 +339,8 @@ async function addLibrary(id: string) {
     deleted: false,
 
     aggregateMetadata: false,
+    mergeTags: false,
+    mergeGenres: false,
     modes: ['API'],
     bookCovers: false,
     seriesCovers: false,

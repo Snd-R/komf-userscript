@@ -39,27 +39,6 @@
     </div>
 
     <div class="col-auto" style="padding: 8px 0 0 0">
-      <div class="row">
-        <div class="col">
-          <q-input
-              v-model="config.imgurClientId"
-              label="Imgur Client Id"
-              filled
-              :disable="config.imgurClientIdDisabled"/>
-        </div>
-        <div class="col-auto" v-if="config.imgurClientIdDisabled">
-          <q-btn
-              @click="config.imgurClientId=''; config.imgurClientIdDisabled=false"
-              flat
-              round
-              :icon="settings.mediaServer === MediaServer.Komga? 'mdi-pencil' :'fa fa-pencil'"
-              :size="settings.mediaServer === MediaServer.Komga? 'md':'sm'"
-          />
-        </div>
-      </div>
-    </div>
-
-    <div class="col-auto" style="padding: 8px 0 0 0">
       <span class="text-body2">Webhooks</span>
       <template v-for="(webhook,i) in config.webhooks">
         <div class="row q-pt-sm" v-if="webhook.value!=null">
