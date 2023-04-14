@@ -396,7 +396,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             postProcessingChanges.seriesTitleLanguage = patch.seriesTitleLanguage
         if (patch.alternativeTitles != current?.postProcessing.alternativeSeriesTitles)
             postProcessingChanges.alternativeSeriesTitles = patch.alternativeTitles
-        if (patch.alternativeTitleLanguages != current?.postProcessing.alternativeSeriesTitleLanguages)
+        if (!equalArrays(patch.alternativeTitleLanguages, current?.postProcessing.alternativeSeriesTitleLanguages ?? []))
             postProcessingChanges.alternativeSeriesTitleLanguages = patch.alternativeTitleLanguages
         if (patch.orderBooks != current?.postProcessing.orderBooks)
             postProcessingChanges.orderBooks = patch.orderBooks
@@ -563,7 +563,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                     changes.mangaDex = getProviderUpdates(current?.mangaDex, value as ProviderConfigDto)
                     break
                 default:
-                    throw Error('unknown provider')
+                    return undefined
             }
         })
 
@@ -582,9 +582,9 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             changes.priority = updated.priority
         if (updated.nameMatchingMode != current?.nameMatchingMode)
             changes.nameMatchingMode = updated.nameMatchingMode
-        if (updated.authorRoles != current?.authorRoles)
+        if (!equalArrays(updated.authorRoles, current?.authorRoles ?? []))
             changes.authorRoles = updated.authorRoles
-        if (updated.artistRoles != current?.artistRoles)
+        if (!equalArrays(updated.artistRoles, current?.artistRoles ?? []))
             changes.artistRoles = updated.artistRoles
         if (updated.mediaType != current?.mediaType)
             changes.mediaType = updated.mediaType
@@ -697,6 +697,10 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                     }
                 })
         }
+    }
+
+    function equalArrays(a1: any[], a2: any[]): boolean {
+        return a1.every((elem, index) => elem == a2[index])
     }
 
     return {
