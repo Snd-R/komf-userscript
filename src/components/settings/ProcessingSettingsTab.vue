@@ -315,7 +315,7 @@ const settings = useSettingsStore()
 let config = useConfigUpdateStore()
 
 
-const updateModeOptions = ['API', 'COMIC_INFO']
+const updateModeOptions = ['API', 'COMIC_INFO', 'OPF']
 const readingDirectionOptions = ['LEFT_TO_RIGHT', 'RIGHT_TO_LEFT', 'VERTICAL', 'WEBTOON']
 const model = settings.mediaServer === MediaServer.Kavita
     ? config.kavitaMetadata
