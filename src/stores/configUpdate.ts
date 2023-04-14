@@ -37,8 +37,8 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
     const settings = useSettingsStore()
     const libraries = ref([{id: '', name: ''}])
     const currentConfig: Ref<KomfConfigDto | null> = ref(null)
-    const providersWithBooks = ['nautiljon', 'yenPress', 'kodansha', 'viz', 'bookWalker', "mangaDex"]
-    const providersWithMediaType = ['mangaUpdates', 'mal', 'nautiljon', 'aniList', 'yenPress', 'bookWalker']
+    const providersWithBooks = ['nautiljon', 'yenPress', 'kodansha', 'viz', 'bookWalker', 'mangaDex', 'bangumi']
+    const providersWithMediaType = ['mangaUpdates', 'mal', 'nautiljon', 'aniList', 'yenPress', 'bookWalker', 'bangumi']
 
     const notifications = reactive({
         komgaLibraries: [] as { name: string | undefined, id: string }[] | null,
@@ -561,6 +561,9 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                     break
                 case 'mangaDex':
                     changes.mangaDex = getProviderUpdates(current?.mangaDex, value as ProviderConfigDto)
+                    break
+                case 'bangumi':
+                    changes.bangumi = getProviderUpdates(current?.bangumi, value as ProviderConfigDto)
                     break
                 default:
                     return undefined
