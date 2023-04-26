@@ -44,6 +44,7 @@ export interface MetadataUpdateConfigUpdateDto {
 }
 
 export interface MetadataProcessingConfigUpdateDto {
+    libraryType?: string,
     aggregate?: boolean,
     mergeTags?: boolean,
     mergeGenres?: boolean,
@@ -172,6 +173,7 @@ export interface MetadataUpdateConfigDto {
 }
 
 export interface MetadataProcessingConfigDto {
+    libraryType: string,
     aggregate: boolean,
     mergeTags: boolean,
     mergeGenres: boolean,

@@ -90,6 +90,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
 
     const komgaMetadata = reactive({
         default: {
+            libraryType: 'MANGA',
             aggregateMetadata: false,
             mergeTags: false,
             mergeGenres: false,
@@ -128,6 +129,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
     })
     const kavitaMetadata = reactive({
         default: {
+            libraryType: 'MANGA',
             aggregateMetadata: false,
             mergeTags: false,
             mergeGenres: false,
@@ -246,6 +248,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                     id: libraryId,
                     name: libraries.value.find(l => l.id == libraryId)?.name ?? '',
                     deleted: false,
+                    libraryType: libraryConfig.libraryType,
                     aggregateMetadata: libraryConfig.aggregate,
                     mergeTags: libraryConfig.mergeTags,
                     mergeGenres: libraryConfig.mergeGenres,
@@ -291,6 +294,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                     id: libraryId,
                     name: libraries.value.find(l => l.id == libraryId)?.name ?? '',
                     deleted: false,
+                    libraryType: libraryConfig.libraryType,
                     aggregateMetadata: libraryConfig.aggregate,
                     mergeTags: libraryConfig.mergeTags,
                     mergeGenres: libraryConfig.mergeGenres,
@@ -381,6 +385,8 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         patch: ProcessingUpdateModel
     ): MetadataProcessingConfigUpdateDto | undefined {
         let changes: MetadataProcessingConfigUpdateDto = {}
+        if (patch.libraryType != current?.libraryType)
+            changes.libraryType = patch.libraryType
         if (patch.aggregateMetadata != current?.aggregate)
             changes.aggregate = patch.aggregateMetadata
         if (patch.mergeTags != current?.mergeTags)
@@ -728,6 +734,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
 })
 
 export interface ProcessingUpdateModel {
+    libraryType: string,
     aggregateMetadata: boolean,
     mergeTags: boolean,
     mergeGenres: boolean,

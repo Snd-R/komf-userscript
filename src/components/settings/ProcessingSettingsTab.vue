@@ -54,6 +54,16 @@
   <q-tab-panels v-model="tab" ref="tabPanel" animated>
     <q-tab-panel name="default" style="padding: 8px 0 0 0">
       <div class="column">
+        <div class="col-auto" style="width: 200px; padding: 8px 0 0 0">
+          <q-select
+            filled
+            dense
+            v-model="model.default.libraryType"
+            :options="libraryTypeOptions"
+            label="Library type"
+            dropdown-icon="mdi-menu-down"
+          />
+        </div>
         <div class="row">
           <div class="col-auto">
             <q-checkbox v-model="model.default.aggregateMetadata" label="Aggregate from all providers" />
@@ -182,6 +192,16 @@
     <template v-for="(library,libraryIndex) in model.library" :key="library.id">
       <q-tab-panel :name="library.id" v-if="!library.deleted" style="padding: 8px 0 0 0">
         <div class="column">
+          <div class="col-auto" style="width: 200px; padding: 8px 0 0 0">
+            <q-select
+              filled
+              dense
+              v-model="model.library[libraryIndex].libraryType"
+              :options="libraryTypeOptions"
+              label="Library type"
+              dropdown-icon="mdi-menu-down"
+            />
+          </div>
           <div class="row">
             <div class="col-auto">
               <q-checkbox v-model="model.library[libraryIndex].aggregateMetadata"
@@ -325,6 +345,7 @@ let config = useConfigUpdateStore()
 
 
 const updateModeOptions = ['API', 'COMIC_INFO', 'OPF']
+const libraryTypeOptions = ['MANGA', 'NOVEL', 'COMIC']
 const readingDirectionOptions = ['LEFT_TO_RIGHT', 'RIGHT_TO_LEFT', 'VERTICAL', 'WEBTOON']
 const model = settings.mediaServer === MediaServer.Kavita
     ? config.kavitaMetadata
@@ -347,6 +368,7 @@ async function addLibrary(id: string) {
         name: config.libraries.find(l => l.id == id)?.name ?? '',
         deleted: false,
 
+        libraryType: 'MANGA',
         aggregateMetadata: false,
         mergeTags: false,
         mergeGenres: false,
