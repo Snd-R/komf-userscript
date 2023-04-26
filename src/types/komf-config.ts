@@ -82,6 +82,7 @@ export interface ProvidersConfigUpdateDto {
     bookWalker?: ProviderConfigUpdateDto,
     mangaDex?: ProviderConfigUpdateDto,
     bangumi?: ProviderConfigUpdateDto,
+    comicVine?: ProviderConfigUpdateDto,
 }
 
 export interface ProviderConfigUpdateDto {
@@ -211,6 +212,7 @@ export interface ProvidersConfigDto {
     bookWalker: ProviderConfigDto,
     mangaDex: ProviderConfigDto,
     bangumi: ProviderConfigDto,
+    comicVine: ProviderConfigDto,
 }
 
 export interface ProviderConfigDto {
@@ -311,4 +313,5 @@ export class DefaultProvidersConfig implements ProvidersConfigDto {
     yenPress: ProviderConfigDto = new DefaultProviderConfig
     mangaDex: ProviderConfigDto = new DefaultProviderConfig
     bangumi: ProviderConfigDto = new DefaultProviderConfig
+    comicVine: ProviderConfigDto = new DefaultProviderConfig
 }

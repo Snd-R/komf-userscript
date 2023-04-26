@@ -698,7 +698,7 @@ async function addLibrary(id: string) {
                 mediaTypeEnabled: mediaTypeEnabled,
                 ...value as ProviderConfigDto
             }
-        })
+        }).sort((a, b) => a.name.localeCompare(b.name))
     config.libraryProviders.push({
         id: id,
         name: configStore.libraries.find(l => l.id == id)?.name ?? '',
