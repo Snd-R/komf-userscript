@@ -1,4 +1,4 @@
-import type {QVueGlobals} from "quasar"
+import type { QVueGlobals } from 'quasar'
 
 export function errorNotification(error: Error | unknown, quasar: QVueGlobals) {
     let text
@@ -9,6 +9,6 @@ export function errorNotification(error: Error | unknown, quasar: QVueGlobals) {
         message: text,
         color: 'negative',
         closeBtn: true,
-        timeout: 5000,
+        timeout: 5000
     })
 }

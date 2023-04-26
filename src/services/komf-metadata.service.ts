@@ -1,6 +1,6 @@
-import axios, {type AxiosInstance} from 'axios'
-import type {IdentifyRequest, SearchResult} from '@/types/metadata'
-import {useSettingsStore} from '@/stores/settings'
+import axios, { type AxiosInstance } from 'axios'
+import type { IdentifyRequest, SearchResult } from '@/types/metadata'
+import { useSettingsStore } from '@/stores/settings'
 
 export default class KomfMetadataService {
     private http: AxiosInstance
@@ -14,8 +14,8 @@ export default class KomfMetadataService {
         try {
             return (
                 await this.http.get(`${this.settings.komfUrl}/${this.settings.mediaServer}/search`, {
-                    params: {name: seriesName, libraryId: libraryId, seriesId: seriesId},
-                    paramsSerializer: {indexes: null},
+                    params: { name: seriesName, libraryId: libraryId, seriesId: seriesId },
+                    paramsSerializer: { indexes: null }
                 })
             ).data
         } catch (e: unknown) {

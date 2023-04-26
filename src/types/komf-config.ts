@@ -258,55 +258,55 @@ export interface BookMetadataConfigDto {
 }
 
 export class DefaultSeriesMetadataConfig implements SeriesMetadataConfigDto {
-    ageRating: boolean = true;
-    authors: boolean = true;
-    books: boolean = true;
-    genres: boolean = true;
-    language: boolean = true;
-    links: boolean = true;
-    publisher: boolean = true;
-    readingDirection: boolean = true;
-    releaseDate: boolean = true;
-    status: boolean = true;
-    summary: boolean = true;
-    tags: boolean = true;
-    thumbnail: boolean = true;
-    title: boolean = true;
-    totalBookCount: boolean = true;
-    useOriginalPublisher: boolean = false;
+    ageRating: boolean = true
+    authors: boolean = true
+    books: boolean = true
+    genres: boolean = true
+    language: boolean = true
+    links: boolean = true
+    publisher: boolean = true
+    readingDirection: boolean = true
+    releaseDate: boolean = true
+    status: boolean = true
+    summary: boolean = true
+    tags: boolean = true
+    thumbnail: boolean = true
+    title: boolean = true
+    totalBookCount: boolean = true
+    useOriginalPublisher: boolean = false
 }
 
 export class DefaultBookMetadataConfig implements BookMetadataConfigDto {
-    authors: boolean = true;
-    isbn: boolean = true;
-    links: boolean = true;
-    number: boolean = true;
-    releaseDate: boolean = true;
-    summary: boolean = true;
-    tags: boolean = true;
-    thumbnail: boolean = true;
-    title: boolean = true;
+    authors: boolean = true
+    isbn: boolean = true
+    links: boolean = true
+    number: boolean = true
+    releaseDate: boolean = true
+    summary: boolean = true
+    tags: boolean = true
+    thumbnail: boolean = true
+    title: boolean = true
 }
 
 export class DefaultProviderConfig implements ProviderConfigDto {
-    enabled: boolean = false;
-    priority: number = 10;
+    enabled: boolean = false
+    priority: number = 10
     authorRoles: string[] = ['WRITER']
     artistRoles: string[] = ['PENCILLER', 'INKER', 'COLORIST', 'LETTERER', 'COVER']
     mediaType: string = 'MANGA'
-    seriesMetadata: SeriesMetadataConfigDto = new DefaultSeriesMetadataConfig();
-    bookMetadata: BookMetadataConfigDto = new DefaultBookMetadataConfig();
+    seriesMetadata: SeriesMetadataConfigDto = new DefaultSeriesMetadataConfig()
+    bookMetadata: BookMetadataConfigDto = new DefaultBookMetadataConfig()
 }
 
 export class DefaultProvidersConfig implements ProvidersConfigDto {
-    aniList: ProviderConfigDto = new DefaultProviderConfig();
-    bookWalker: ProviderConfigDto = new DefaultProviderConfig();
-    kodansha: ProviderConfigDto = new DefaultProviderConfig();
-    mal: ProviderConfigDto = new DefaultProviderConfig;
-    mangaUpdates: ProviderConfigDto = new DefaultProviderConfig;
-    nautiljon: ProviderConfigDto = new DefaultProviderConfig;
-    viz: ProviderConfigDto = new DefaultProviderConfig;
-    yenPress: ProviderConfigDto = new DefaultProviderConfig;
-    mangaDex: ProviderConfigDto = new DefaultProviderConfig;
-    bangumi: ProviderConfigDto = new DefaultProviderConfig;
+    aniList: ProviderConfigDto = new DefaultProviderConfig()
+    bookWalker: ProviderConfigDto = new DefaultProviderConfig()
+    kodansha: ProviderConfigDto = new DefaultProviderConfig()
+    mal: ProviderConfigDto = new DefaultProviderConfig
+    mangaUpdates: ProviderConfigDto = new DefaultProviderConfig
+    nautiljon: ProviderConfigDto = new DefaultProviderConfig
+    viz: ProviderConfigDto = new DefaultProviderConfig
+    yenPress: ProviderConfigDto = new DefaultProviderConfig
+    mangaDex: ProviderConfigDto = new DefaultProviderConfig
+    bangumi: ProviderConfigDto = new DefaultProviderConfig
 }

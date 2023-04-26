@@ -1,6 +1,6 @@
-import {defineStore} from 'pinia'
-import type {Ref} from 'vue'
-import {reactive, ref} from 'vue'
+import { defineStore } from 'pinia'
+import type { Ref } from 'vue'
+import { reactive, ref } from 'vue'
 import type {
     BookMetadataConfigDto,
     BookMetadataConfigUpdateDto,
@@ -28,14 +28,14 @@ import type {
     ProvidersConfigUpdateDto,
     SeriesMetadataConfigDto,
     SeriesMetadataConfigUpdateDto
-} from "@/types/komf-config";
-import {DefaultProviderConfig} from "@/types/komf-config";
-import {useSettingsStore} from "@/stores/settings";
-import MediaServer from "@/types/mediaServer";
+} from '@/types/komf-config'
+import { DefaultProviderConfig } from '@/types/komf-config'
+import { useSettingsStore } from '@/stores/settings'
+import MediaServer from '@/types/mediaServer'
 
 export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
     const settings = useSettingsStore()
-    const libraries = ref([{id: '', name: ''}])
+    const libraries = ref([{ id: '', name: '' }])
     const currentConfig: Ref<KomfConfigDto | null> = ref(null)
     const providersWithBooks = ['nautiljon', 'yenPress', 'kodansha', 'viz', 'bookWalker', 'mangaDex', 'bangumi']
     const providersWithMediaType = ['mangaUpdates', 'mal', 'nautiljon', 'aniList', 'yenPress', 'bookWalker', 'bangumi']
@@ -49,7 +49,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                 existing: false
             }
         ],
-        seriesCover: false,
+        seriesCover: false
     })
 
     const metadataProviders = reactive({
@@ -102,7 +102,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             alternativeTitleLanguages: ['en', 'ja', 'ja-ro'],
             orderBooks: false,
             readingDirectionValue: null,
-            languageValue: null,
+            languageValue: null
         } as ProcessingUpdateModel,
         library: [] as ProcessingLibraryUpdateModel[]
     })
@@ -139,7 +139,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             alternativeTitles: false,
             alternativeTitleLanguages: ['en', 'ja', 'ja-ro'],
             orderBooks: false,
-            languageValue: null,
+            languageValue: null
         } as ProcessingUpdateModel,
         library: [] as ProcessingLibraryUpdateModel[]
     })
@@ -150,7 +150,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
 
         notifications.webhooks = Object.entries(config.discord?.webhooks ?? {})
             .map(([, value]) => {
-                return {value: value, existing: true}
+                return { value: value, existing: true }
             })
         notifications.seriesCover = config.discord?.seriesCover
         notifications.komgaLibraries = config.komga.notifications.libraries
@@ -176,14 +176,14 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             .map(([key, value]) => {
                 let books = providersWithBooks.includes(key)
                 let mediaType = providersWithMediaType.includes(key)
-                return {...(value as ProviderConfigDto), name: key, books: books, mediaTypeEnabled: mediaType}
+                return { ...(value as ProviderConfigDto), name: key, books: books, mediaTypeEnabled: mediaType }
             }).filter(provider => provider.enabled)
 
         metadataProviders.defaultDisabledProviders = Object.entries(config.metadataProviders.defaultProviders)
             .map(([key, value]) => {
                 let books = providersWithBooks.includes(key)
                 let mediaType = providersWithMediaType.includes(key)
-                return {...(value as ProviderConfigDto), name: key, books: books, mediaTypeEnabled: mediaType}
+                return { ...(value as ProviderConfigDto), name: key, books: books, mediaTypeEnabled: mediaType }
             }).filter(provider => !provider.enabled)
             .sort((a, b) => a.name.localeCompare(b.name))
 
@@ -198,12 +198,17 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                         .map(([key, value]) => {
                             let books = providersWithBooks.includes(key)
                             let mediaType = providersWithMediaType.includes(key)
-                            return {...value as ProviderConfigDto, name: key, books: books, mediaTypeEnabled: mediaType}
+                            return {
+                                ...value as ProviderConfigDto,
+                                name: key,
+                                books: books,
+                                mediaTypeEnabled: mediaType
+                            }
                         }).filter(provider => provider.enabled),
                     disabledProviders: Object.entries(value as ProvidersConfigDto).map(([key, value]) => {
                         let books = providersWithBooks.includes(key)
                         let mediaType = providersWithMediaType.includes(key)
-                        return {...value as ProviderConfigDto, name: key, books: books, mediaTypeEnabled: mediaType}
+                        return { ...value as ProviderConfigDto, name: key, books: books, mediaTypeEnabled: mediaType }
                     }).filter(provider => !provider.enabled)
                 }
             })
@@ -330,7 +335,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         changes.eventListener = getEventListenerUpdates(current.eventListener, eventListenerPatch)
         changes.notifications = getNotificationsUpdates(
             current.notifications,
-            {libraries: notifications.komgaLibraries?.map(lib => lib.id) ?? []}
+            { libraries: notifications.komgaLibraries?.map(lib => lib.id) ?? [] }
         )
         changes.metadataUpdate = getMetadataUpdates(current.metadataUpdate, komgaMetadata)
 
@@ -351,7 +356,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         }
         changes.eventListener = getEventListenerUpdates(current.eventListener, eventListenerPatch)
         changes.notifications = getNotificationsUpdates(current.notifications,
-            {libraries: notifications.kavitaLibraries?.map(lib => lib.id) ?? []}
+            { libraries: notifications.kavitaLibraries?.map(lib => lib.id) ?? [] }
         )
         changes.metadataUpdate = getMetadataUpdates(current.metadataUpdate, kavitaMetadata)
 
@@ -456,7 +461,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         patch: NotificationConfigDto
     ): NotificationConfigUpdateDto | undefined {
         if (patch.libraries.length == 0 && current.libraries.length != 0) {
-            return {libraries: []}
+            return { libraries: [] }
         } else if (patch.libraries.length != 0 && !patch.libraries.every((v, i) => v === current.libraries[i])) {
             return patch as NotificationConfigUpdateDto
         } else return undefined
@@ -718,7 +723,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         kavita,
         komga,
         reset,
-        getUpdates,
+        getUpdates
     }
 })
 

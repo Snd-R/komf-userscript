@@ -11,7 +11,7 @@
 
         <div class="row" v-if="confirmText">
           <div class="col text-body2">
-            <q-checkbox v-model="confirmation" :color="buttonConfirmColor" :label="confirmText"/>
+            <q-checkbox v-model="confirmation" :color="buttonConfirmColor" :label="confirmText" />
           </div>
         </div>
       </q-card-section>
@@ -27,45 +27,45 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from 'vue'
-import {useDialogPluginComponent} from 'quasar'
+import { computed, ref } from 'vue'
+import { useDialogPluginComponent } from 'quasar'
 
 defineEmits([
-  ...useDialogPluginComponent.emits
+    ...useDialogPluginComponent.emits
 ])
-const {dialogRef, onDialogHide, onDialogOK, onDialogCancel} = useDialogPluginComponent()
+const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 
 
 const props = defineProps({
-  value: Boolean,
-  title: {
-    type: String,
-    required: true,
-  },
-  body: {
-    type: String,
-    required: false,
-  },
-  bodyHtml: {
-    type: String,
-    required: false,
-  },
-  confirmText: {
-    type: String,
-    required: false,
-  },
-  buttonCancel: {
-    type: String,
-    required: false,
-  },
-  buttonConfirm: {
-    type: String,
-    required: true,
-  },
-  buttonConfirmColor: {
-    type: String,
-    default: 'primary',
-  },
+    value: Boolean,
+    title: {
+        type: String,
+        required: true
+    },
+    body: {
+        type: String,
+        required: false
+    },
+    bodyHtml: {
+        type: String,
+        required: false
+    },
+    confirmText: {
+        type: String,
+        required: false
+    },
+    buttonCancel: {
+        type: String,
+        required: false
+    },
+    buttonConfirm: {
+        type: String,
+        required: true
+    },
+    buttonConfirmColor: {
+        type: String,
+        default: 'primary'
+    }
 })
 
 const confirmation = ref(false)
@@ -73,11 +73,11 @@ const confirmation = ref(false)
 const buttonColor = computed(() => confirmation.value ? props.buttonConfirmColor : '')
 
 function dialogCancel() {
-  confirmation.value = false
+    confirmation.value = false
 }
 
 function dialogConfirm() {
-  onDialogOK()
+    onDialogOK()
 }
 </script>
 

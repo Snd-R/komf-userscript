@@ -1,6 +1,6 @@
-import axios, {type AxiosInstance} from 'axios'
-import {useSettingsStore} from '@/stores/settings'
-import type {KomfConfigDto, KomfConfigUpdateDto} from "@/types/komf-config";
+import axios, { type AxiosInstance } from 'axios'
+import { useSettingsStore } from '@/stores/settings'
+import type { KomfConfigDto, KomfConfigUpdateDto } from '@/types/komf-config'
 
 export default class KomfConfigService {
     private http: AxiosInstance
