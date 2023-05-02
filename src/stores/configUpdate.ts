@@ -55,6 +55,8 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
     const metadataProviders = reactive({
         malClientId: '',
         malClientIdDisabled: false,
+        comicVineClientId: '' as string | undefined,
+        comicVineClientIdDisabled: false,
         nameMatchingMode: 'CLOSEST_MATCH',
         defaultProviders: [{
             name: 'MangaUpdates',
@@ -172,6 +174,8 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
 
         metadataProviders.malClientId = config.metadataProviders.malClientId
         metadataProviders.malClientIdDisabled = config.metadataProviders.malClientId != ''
+        metadataProviders.comicVineClientId = config.metadataProviders.comicVineClientId
+        metadataProviders.comicVineClientIdDisabled = config.metadataProviders.comicVineClientId != undefined
         metadataProviders.nameMatchingMode = config.metadataProviders.nameMatchingMode
         metadataProviders.defaultProviders = Object.entries(config.metadataProviders.defaultProviders)
             .sort((a, b) => a[1].priority - b[1].priority)
@@ -502,6 +506,8 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         let changes: MetadataProvidersConfigUpdateDto = {}
         if (!metadataProviders.malClientIdDisabled)
             changes.malClientId = metadataProviders.malClientId
+        if (!metadataProviders.comicVineClientIdDisabled)
+            changes.comicVineClientId = metadataProviders.comicVineClientId
         if (metadataProviders.nameMatchingMode != currentProvidersConfig?.nameMatchingMode)
             changes.nameMatchingMode = metadataProviders.nameMatchingMode
 

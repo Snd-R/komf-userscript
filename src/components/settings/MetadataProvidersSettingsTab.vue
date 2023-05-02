@@ -322,6 +322,25 @@
                 />
               </div>
             </div>
+            <div class="row">
+              <div class="col" style="padding: 0">
+                <q-input v-model="config.comicVineClientId"
+                         label="ComicVine ClientId"
+                         dense
+                         filled
+                         :disable="config.comicVineClientIdDisabled"
+                />
+              </div>
+              <div class="col-auto" v-if="config.comicVineClientIdDisabled" style="padding: 0">
+                <q-btn
+                  @click="config.comicVineClientId=''; config.comicVineClientIdDisabled=false"
+                  flat
+                  round
+                  :icon="settings.mediaServer === MediaServer.Komga? 'mdi-pencil' :'fa fa-pencil'"
+                  :size="settings.mediaServer === MediaServer.Komga? 'md':'sm'"
+                />
+              </div>
+            </div>
           </div>
         </div>
 

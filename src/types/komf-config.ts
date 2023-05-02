@@ -66,6 +66,7 @@ export interface MetadataPostProcessingConfigUpdateDto {
 
 export interface MetadataProvidersConfigUpdateDto {
     malClientId?: string,
+    comicVineClientId?: string,
     nameMatchingMode?: string,
     defaultProviders?: ProvidersConfigUpdateDto,
     libraryProviders?: Record<string, ProvidersConfigUpdateDto>,
@@ -196,6 +197,7 @@ export interface MetadataPostProcessingConfigDto {
 
 export interface MetadataProvidersConfigDto {
     malClientId: string,
+    comicVineClientId?: string,
     nameMatchingMode: string,
     defaultProviders: ProvidersConfigDto,
     libraryProviders: Record<string, ProvidersConfigDto>,
