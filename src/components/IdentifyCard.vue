@@ -6,7 +6,10 @@
 
     <q-card-section horizontal class="card-border">
       <div class="full-width" style="padding: 0">
-        <q-img :src="item.imageUrl" ratio="0.7071" />
+        <q-img
+          :src="item.imageUrl" ratio="0.7071"
+          referrerpolicy="no-referrer"
+        />
 
         <q-card-section class="full-width">
           <div class="text-center ellipsis-2-lines" style="max-height:42px;height:42px">
