@@ -703,8 +703,9 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                 .filter(el => el.classList.contains('v-list-item--dense') &&
                     /\/libraries.*/.test(el.getAttribute('href')!)
                 ).map(el => {
+                    let pathTokens = el.getAttribute('href')!.split('/')
                     return {
-                        id: el.getAttribute('href')!.split('/')[2],
+                        id: pathTokens[pathTokens.findIndex(el => el == 'libraries') + 1],
                         name: el.text
                     }
                 })
@@ -714,8 +715,9 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                 .filter(el => el.classList.contains('side-nav-item') &&
                     /\/library.*/.test(el.getAttribute('href')!)
                 ).map(el => {
+                    let pathTokens = el.getAttribute('href')!.split('/')
                     return {
-                        id: el.getAttribute('href')!.split('/')[2],
+                        id: pathTokens[pathTokens.findIndex(el => el == 'library') + 1],
                         name: Array.from(el.getElementsByTagName('span'))
                             .find(span => span.classList.contains('side-nav-text'))?.textContent ?? ''
                     }
