@@ -99,6 +99,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             modes: ['API'],
             bookCovers: false,
             seriesCovers: false,
+            overrideExistingCovers: true,
             seriesTitle: false,
             seriesTitleLanguage: 'en',
             alternativeTitles: false,
@@ -239,6 +240,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         komgaMetadata.default.modes = config.komga.metadataUpdate.default.updateModes
         komgaMetadata.default.bookCovers = config.komga.metadataUpdate.default.bookCovers
         komgaMetadata.default.seriesCovers = config.komga.metadataUpdate.default.seriesCovers
+        komgaMetadata.default.overrideExistingCovers = config.komga.metadataUpdate.default.overrideExistingCovers
         komgaMetadata.default.seriesTitle = config.komga.metadataUpdate.default.postProcessing.seriesTitle
         komgaMetadata.default.seriesTitleLanguage = config.komga.metadataUpdate.default.postProcessing.seriesTitleLanguage
         komgaMetadata.default.orderBooks = config.komga.metadataUpdate.default.postProcessing.orderBooks
@@ -260,6 +262,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                     modes: libraryConfig.updateModes,
                     bookCovers: libraryConfig.bookCovers,
                     seriesCovers: libraryConfig.seriesCovers,
+                    overrideExistingCovers: libraryConfig.overrideExistingCovers,
                     seriesTitle: libraryConfig.postProcessing.seriesTitle,
                     seriesTitleLanguage: libraryConfig.postProcessing.seriesTitleLanguage,
                     orderBooks: libraryConfig.postProcessing.orderBooks,
@@ -287,6 +290,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
         kavitaMetadata.default.modes = config.kavita.metadataUpdate.default.updateModes
         kavitaMetadata.default.bookCovers = config.kavita.metadataUpdate.default.bookCovers
         kavitaMetadata.default.seriesCovers = config.kavita.metadataUpdate.default.seriesCovers
+        kavitaMetadata.default.overrideExistingCovers = config.kavita.metadataUpdate.default.overrideExistingCovers
         kavitaMetadata.default.seriesTitle = config.kavita.metadataUpdate.default.postProcessing.seriesTitle
         kavitaMetadata.default.seriesTitleLanguage = config.kavita.metadataUpdate.default.postProcessing.seriesTitleLanguage
         kavitaMetadata.default.languageValue = config.kavita.metadataUpdate.default.postProcessing.languageValue
@@ -306,6 +310,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
                     modes: libraryConfig.updateModes,
                     bookCovers: libraryConfig.bookCovers,
                     seriesCovers: libraryConfig.seriesCovers,
+                    overrideExistingCovers: libraryConfig.overrideExistingCovers,
                     seriesTitle: libraryConfig.postProcessing.seriesTitle,
                     seriesTitleLanguage: libraryConfig.postProcessing.seriesTitleLanguage,
                     orderBooks: libraryConfig.postProcessing.orderBooks,
@@ -402,6 +407,8 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
             changes.bookCovers = patch.bookCovers
         if (patch.seriesCovers != current?.seriesCovers)
             changes.seriesCovers = patch.seriesCovers
+        if (patch.overrideExistingCovers != current?.overrideExistingCovers)
+            changes.overrideExistingCovers = patch.overrideExistingCovers
         if (!patch.modes.every((v, i) => v === current?.updateModes[i]))
             changes.updateModes = patch.modes
 
@@ -726,7 +733,7 @@ export const useConfigUpdateStore = defineStore('settingsUpdate', () => {
     }
 
     function equalArrays(a1: any[], a2: any[]): boolean {
-        return a1.every((elem, index) => elem == a2[index])
+        return a1.length == a2.length && a1.every((elem, index) => elem == a2[index])
     }
 
     return {
@@ -757,6 +764,7 @@ export interface ProcessingUpdateModel {
     alternativeTitleLanguages: string[],
     bookCovers: boolean,
     seriesCovers: boolean,
+    overrideExistingCovers: boolean,
     orderBooks: boolean,
     readingDirectionValue?: null | string,
     languageValue?: null | string,

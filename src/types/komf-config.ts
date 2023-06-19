@@ -50,6 +50,7 @@ export interface MetadataProcessingConfigUpdateDto {
     mergeGenres?: boolean,
     bookCovers?: boolean,
     seriesCovers?: boolean,
+    overrideExistingCovers?: boolean,
     updateModes?: string[],
     postProcessing?: MetadataPostProcessingConfigUpdateDto
 }
@@ -181,6 +182,7 @@ export interface MetadataProcessingConfigDto {
     mergeGenres: boolean,
     bookCovers: boolean,
     seriesCovers: boolean,
+    overrideExistingCovers: boolean,
     updateModes: string[],
     postProcessing: MetadataPostProcessingConfigDto
 }

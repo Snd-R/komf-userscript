@@ -98,6 +98,10 @@
           </div>
         </div>
 
+        <div v-if="settings.mediaServer === MediaServer.Komga" class="col-auto" style="padding: 8px 0 0 0">
+          <q-checkbox v-model="model.default.overrideExistingCovers" label="Override Existing Covers" />
+        </div>
+
         <div class="col-auto" style="padding: 8px 0 0 0">
           <div class="row">
             <div class="col-auto">
@@ -239,6 +243,10 @@
             </div>
           </div>
 
+          <div v-if="settings.mediaServer === MediaServer.Komga" class="col-auto" style="padding: 8px 0 0 0">
+            <q-checkbox v-model="model.library[libraryIndex].overrideExistingCovers" label="Override Existing Covers" />
+          </div>
+
           <div class="col-auto" style="padding: 8px 0 0 0">
             <div class="row">
               <div class="col-auto">
@@ -375,6 +383,7 @@ async function addLibrary(id: string) {
         modes: ['API'],
         bookCovers: false,
         seriesCovers: false,
+        overrideExistingCovers: true,
         seriesTitle: false,
         seriesTitleLanguage: 'en',
         alternativeTitles: false,
