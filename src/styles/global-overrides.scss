@@ -18,3 +18,8 @@ body {
 .q-item.row {
   margin: 0;
 }
+
+.col {
+  width: unset !important;
+  min-width: unset !important;
+}
