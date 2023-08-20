@@ -68,11 +68,11 @@ const observer = new window.MutationObserver((mutations) => {
                 }
 
                 let buttons = Array.from(element.getElementsByTagName('button'))
-                let editSeriesButton = buttons.find(elem => elem.getAttribute('title') == 'Edit Series information')
+                let editSeriesButton = buttons.find(elem => elem.getAttribute('id') == 'edit-btn--komf')
                 if (editSeriesButton) {
                     editSeriesButton.parentElement?.insertAdjacentElement('afterend', seriesActionsElement.value)
                 }
-                let libraryFilterButton = buttons.find(elem => elem.getAttribute('aria-label') == 'Open Filtering and Sorting')
+                let libraryFilterButton = buttons.find(elem => elem.getAttribute('id') == 'filter-btn--komf')
                 if (libraryFilterButton && libraryFilterButton.parentElement) {
                     libraryActionsElement.value = libraryFilterButton.parentElement
                 }
