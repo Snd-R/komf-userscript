@@ -36,15 +36,21 @@ const settings = useSettingsStore()
 const loading = ref(false)
 
 function seriesTitle() {
-    if (settings.mediaServer == MediaServer.Komga)
-        return (document.querySelector('.v-main__wrap .v-toolbar__content .v-toolbar__title span') as HTMLElement).innerText
+    if (settings.mediaServer == MediaServer.Komga) {
+        return (
+            (
+                document.querySelector('.v-main__wrap .v-toolbar__content .v-toolbar__title span') ||
+                document.querySelector('.v-main__wrap .container--fluid .container span.text-h6')
+            ) as HTMLElement
+        ).innerText
+    }
     else
         return (document.querySelector('app-series-detail app-side-nav-companion-bar div h2 span') as HTMLElement).innerText
 }
 
 function seriesId() {
     let path = window.location.pathname.split('/')
-    return path[path.findIndex(el => el == 'series') + 1]
+    return path[path.findIndex(el => el == 'series' || el == 'oneshot') + 1]
 }
 
 function libraryId() {
