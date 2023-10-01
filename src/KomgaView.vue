@@ -92,7 +92,7 @@ const observer = new window.MutationObserver((mutations) => {
                 } else if (path_split.find(el => el == 'series')) {
                     toolbar?.children[4].insertAdjacentElement('afterend', seriesActionsElement.value)
                 } else if (path_split.find(el => el == 'oneshot')) {
-                    toolbar?.children[3].insertAdjacentElement('beforeend', seriesActionsElement.value)
+                    toolbar?.children[2].insertAdjacentElement('afterend', seriesActionsElement.value)
                 }
             }
         }
