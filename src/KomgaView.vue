@@ -92,7 +92,10 @@ const observer = new window.MutationObserver((mutations) => {
                 } else if (path_split.find(el => el == 'series')) {
                     toolbar?.children[4].insertAdjacentElement('afterend', seriesActionsElement.value)
                 } else if (path_split.find(el => el == 'oneshot')) {
-                    toolbar?.children[2].insertAdjacentElement('afterend', seriesActionsElement.value)
+                   let edit_button= Array.from(toolbar.children).find(el => el.tagName == "BUTTON")
+                   if (edit_button) {
+                       edit_button.insertAdjacentElement('afterend', seriesActionsElement.value)
+                   }
                 }
             }
         }
