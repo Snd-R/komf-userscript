@@ -62,7 +62,6 @@ function onClick() {
   max-width: v-bind(width);
   width: v-bind(width);
   border: 3px solid transparent;
-  background-color: $darker;
 }
 
 .identify-card:hover {
