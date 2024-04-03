@@ -91,6 +91,8 @@ const observer = new window.MutationObserver((mutations) => {
                     toolbar?.children[4].insertAdjacentElement('afterend', libraryActionsElement.value)
                 } else if (path_split.find(el => el == 'series')) {
                     toolbar?.children[4].insertAdjacentElement('afterend', seriesActionsElement.value)
+                } else if (path_split.find(el => el == 'oneshot')) {
+                    toolbar?.children[2].insertAdjacentElement('afterend', seriesActionsElement.value)
                 }
             }
         }

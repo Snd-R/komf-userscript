@@ -105,7 +105,7 @@ const selectedResult = ref<SearchResult>({} as SearchResult)
 
 const seriesId = computed(() => {
     let path = window.location.pathname.split('/')
-    return path[path.findIndex(el => el == 'series') + 1]
+    return path[path.findIndex(el => el == 'series' || el == 'oneshot') + 1]
 })
 
 const libraryId = computed(() => {
