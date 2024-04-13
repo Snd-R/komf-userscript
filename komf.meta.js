@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         Komf
 // @namespace    https://github.com/Snd-R/komf-userscript
-// @version      0.12.0
+// @version      0.12.1
 // @description  Komf userscript
 // @author       snd-r
-// @include      http://localhost:8080/*
+// @include      http://localhost:25600/*
 // @include      http://localhost:5000/*
 // @grant        none
 // @run-at       document-body
