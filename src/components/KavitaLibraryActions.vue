@@ -3,7 +3,6 @@
          flat
          padding="0.55em 0 0.55em 0"
          class="q-ml-sm "
-         style="background: #6c757d; border-radius: 10%"
   >
     <LibraryActionsMenu />
   </q-btn>

@@ -45,7 +45,7 @@ function seriesTitle() {
         ).innerText
     }
     else
-        return (document.querySelector('app-series-detail app-side-nav-companion-bar div h2 span') as HTMLElement).innerText
+        return (document.querySelector('app-series-detail .info-container div h4 span') as HTMLElement).innerText
 }
 
 function seriesId() {

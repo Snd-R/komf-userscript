@@ -2,7 +2,6 @@
   <q-btn icon="fa fa-pen-to-square"
          flat
          padding=".375rem .75rem"
-         style="background: #6c757d; border-radius: 15%"
   >
     <SeriesActionsMenu />
   </q-btn>

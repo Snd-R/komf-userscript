@@ -68,17 +68,11 @@ const observer = new window.MutationObserver((mutations) => {
                 }
 
                 let buttons = Array.from(element.getElementsByTagName('button'))
-                let editSeriesButton = buttons.find(elem => elem.getAttribute('id') == 'edit-btn--komf' ||
-                  // TODO remove in next kavita stable release after 0.7.7
-                  elem.firstElementChild?.firstElementChild?.classList?.contains('fa-pen') && elem.parentNode?.parentNode?.parentNode?.parentNode?.parentNode?.parentNode?.nodeName == 'APP-SERIES-DETAIL'
-                )
+                let editSeriesButton = buttons.find(elem => elem.getAttribute('id') == 'edit-btn--komf')
                 if (editSeriesButton) {
                     editSeriesButton.parentElement?.insertAdjacentElement('afterend', seriesActionsElement.value)
                 }
-              let libraryFilterButton = buttons.find(elem => elem.getAttribute('id') == 'filter-btn--komf' ||
-              // TODO remove in next kavita stable release after 0.7.7
-                 elem.firstElementChild?.classList.contains('fa-filter') && elem.parentNode?.parentNode?.parentNode?.parentNode?.nodeName == 'APP-LIBRARY-DETAIL'
-            )
+              let libraryFilterButton = buttons.find(elem => elem.getAttribute('id') == 'filter-btn--komf')
                 if (libraryFilterButton && libraryFilterButton.parentElement) {
                     libraryActionsElement.value = libraryFilterButton.parentElement
                 }
